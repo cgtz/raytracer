@@ -1,13 +1,13 @@
 #pragma once
 #include "stdafx.h"
-#include "Color.h"
+
 
 class Material
 {
 public:
-	Color ambient, diffuse, specular;
+	vec3 ambient, diffuse, specular, reflect;
 	float coeff;
 	Material(){};
-	Material(Color ambient, Color diffuse, Color specular, float coeff);
+	Material(vec3 ambient, vec3 diffuse, vec3 specular, vec3 reflect, float coeff);
 };
 

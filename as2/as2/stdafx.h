@@ -21,7 +21,8 @@
 #include <list>
 //#include <typeinfo>
 #include <algorithm>
+#include "algebra3.h"
 
 #define PI 3.14159265
-#define POS_INF std::numeric_limits<float>::max();
-#define NEG_INF  std::numeric_limits<float>::min();
+#define POS_INF std::numeric_limits<float>::max()
+#define NEG_INF  std::numeric_limits<float>::min()

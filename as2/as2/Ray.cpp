@@ -2,14 +2,14 @@
 #include "Ray.h"
 
 
-Ray::Ray(Point pos, Vector dir, float tMin, float tMax) {
+Ray::Ray(vec3 pos, vec3 dir, float tMin, float tMax) {
 	this->pos = pos;
 	this->dir = dir.normalize();
 	this->tMin = tMin;
 	this->tMax = tMax;
 }
 
-Point Ray::evaluate(float t) {
+vec3 Ray::evaluate(float t) {
 	if (t <= this->tMin || t >= this->tMax) {
 		std::cout << "Bad t, outside of bounds for ray" << std::endl;
 		exit(1);

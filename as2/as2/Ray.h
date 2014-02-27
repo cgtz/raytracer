@@ -1,15 +1,14 @@
 #pragma once
 #include "stdafx.h"
-#include "Vector.h"
-#include "Point.h"
+
 class Ray
 {
 public:
-	Point pos;
-	Vector dir;
+	vec3 pos;
+	vec3 dir;
 	float tMin, tMax;
 	Ray(){}
-	Ray(Point pos, Vector dir, float tMin, float tMax);
-	Point evaluate(float t);
+	Ray(vec3 pos, vec3 dir, float tMin, float tMax);
+	vec3 evaluate(float t);
 };
 

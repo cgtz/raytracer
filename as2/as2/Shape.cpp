@@ -7,19 +7,19 @@ Shape::Shape(void)
 {
 }
 
-Sphere::Sphere(Point center, float radius, Material material) {
+Sphere::Sphere(vec3 center, float radius, Material material) {
 	this->center = center;
 	this->radius = radius;
 	this->material = material;
 }
 
 bool Sphere::intersect(Ray& ray, float& tHit, Intersection* intersect) {
-	Point e = ray.pos;
-	Vector d = ray.dir;
+	vec3 e = ray.pos;
+	vec3 d = ray.dir;
 
-	float a = d.dot(d);
-	float b = 2*(e - this->center).dot(d);
-	float c = (e - this->center).dot(e - this->center) - this->radius*this->radius;
+	float a = d*d;
+	float b = 2*(e - this->center)*d;
+	float c = (e - this->center)*(e - this->center) - this->radius*this->radius;
 
 	if (a == 0){
 		std::cout << "Ray is just a point!" << std::endl;
@@ -32,7 +32,7 @@ bool Sphere::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 	if (discriminant >= 0){
 		float tPos = (-b + sqrt(discriminant)) / 2*a;
 		float tNeg = (-b - sqrt(discriminant)) / 2*a;
-		tHit = fmin(tHit, fmin( tPos, tNeg));
+		tHit = min(tHit, min( tPos, tNeg));
 		if (tHit >= ray.tMax || tHit <= ray.tMin) return false;
 		intersect->point = ray.evaluate(tHit);
 		intersect->normal  = (intersect->point - this->center).normalize();

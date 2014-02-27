@@ -1,32 +1,31 @@
 #pragma once
 #include "stdafx.h"
-#include "Color.h"
 #include "Intersection.h"
 #include "Ray.h"
 
 //class Light {
 //    public:
-//        Color color;
-//        Point pos;
-//        Light(Color, Vector);
-//		virtual void generateLightRay(Intersection& intersect, Ray* ray, Color* color){}
+//        vec3 color;
+//        vec3 pos;
+//        Light(vec3, vec3);
+//		virtual void generateLightRay(Intersection& intersect, Ray* ray, vec3* color){}
 //        
 //};
 
 
 class PtLight {
 public:
-	Color color;
-	Point pos;
-	PtLight(Color c, Point p);
-	void generateLightRay(Intersection& intersect, Ray* ray, Color* color);
+	vec3 color;
+	vec3 pos;
+	PtLight(vec3 c, vec3 p);
+	void generateLightRay(Intersection& intersect, Ray* ray, vec3* color);
 };
 
 class DirLight {
 public:
-	Color color;
-	Vector dir;
-	DirLight(Color c, Vector v);
-	void generateLightRay(Intersection& intersect, Ray* ray, Color* color);
+	vec3 color;
+	vec3 dir;
+	DirLight(vec3 c, vec3 v);
+	void generateLightRay(Intersection& intersect, Ray* ray, vec3* color);
 };
 

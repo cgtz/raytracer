@@ -2,16 +2,16 @@
 #include "Film.h"
 
 
-Film::Film(float width, float height) {
-	this->width = static_cast<int>(width);
-	this->height = static_cast<int>(height);
-	this->image = image(this->width, this->height,1,3,0);
+Film::Film(int width, int height) {
+	this->width =width;
+	this->height =height;
+	this->image.assign(this->width, this->height,1,3,0); //3 channels
 }
 
-void Film::writePixel(Sample sample, Color color) {
-	const float colorArray[] = {color.r, color.g, color.b};
+void Film::writePixel(int i, int j, vec3 color) {
+	const float colorArray[] = {color[RED], color[GREEN], color[BLUE]};
 	//FIX FOR MULTIPLE SAMPLES IN ONE PIXEL
-	this->image.draw_point(static_cast<int>(sample.x), static_cast<int>(sample.y), colorArray);
+	this->image.draw_point(i , j, colorArray);
 }
 
 void Film::display() {

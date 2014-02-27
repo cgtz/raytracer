@@ -2,37 +2,17 @@
 //
 
 #include "stdafx.h"
-#include "Color.h"
-#include "Sampler.h"
+#include "Scene.h"
 
 
 using namespace std;
 int _tmain(int argc, _TCHAR* argv[])
 {
 
+	Scene coolScene = Scene();
+	coolScene.render();
 
-
-
- //   //COLOR TEST - PASS
- //   Color c1(0.38f,0.67f,0.32f);
- //   cout << c1.toString() << endl;
-
-	//SAMPLER & SAMPLE TEST - PASS	
-	//Sample cool = Sample(0,0);
-	//Sampler sampler = Sampler(5,6,.5);
-	//while (sampler.generateSample(cool)) {
-	//	cout << cool.toString() << endl;
-	//}
-	Sample cool = Sample(0,0);
-	Sampler sampler = Sampler(5,6,.5);
-	while (sampler.generateSample(cool)) {
-		cout << cool.toString() << endl;
-	}
 	return 0;
-	
-
-
-	
 }
 
 
