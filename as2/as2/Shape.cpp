@@ -18,7 +18,7 @@ bool Sphere::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 	vec3 d = ray.dir;
 
 	float a = d*d;
-	float b = 2*(e - this->center)*d;
+	float b = 2*d*(e - this->center);
 	float c = (e - this->center)*(e - this->center) - this->radius*this->radius;
 
 	if (a == 0){

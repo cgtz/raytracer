@@ -5,7 +5,7 @@
 Scene::Scene()
 {
 	this->allShapes.push_back(new Sphere(vec3(200, 0, 0), 150, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),6)));
-	this->allShapes.push_back(new Sphere(vec3(-200, 0, 0), 100, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),3)));
+	this->allShapes.push_back(new Sphere(vec3(-700, 0, 0), 100, Material(vec3(1, 1, 0), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),3)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, -1, -1)));
 	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 0)));
@@ -39,7 +39,7 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 		float tempT = POS_INF;
 		Intersection tempI; //Don't matter variable
 		dirLight->generateLightRay(intersect, &lray, &lcolor); //create ray: intersect->point + t*(dirLight->dir) 
-		//vec3 only if path to object not occluded
+		//color only if path to object not occluded
 		if (!this->closestIntersect(lray, tempT, tempI)){
 			vec3 I = (dirLight->dir * -1).normalize();
 			vec3 ambient = prod(mat.ambient, dirLight->color);
@@ -47,8 +47,8 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 			vec3 diffuse = prod(mat.diffuse, dirLight->color)*max(0.0, I*intersect.normal);
 			vec3 specular = prod(mat.specular, dirLight->color)*
 				pow(max(0.0,
-				((I * -1) + intersect.normal * 2 * I*intersect.normal)
-				*(this->camera.lookFrom - intersect.point)),
+				(-I + (2 * I*intersect.normal)*intersect.normal).normalize()
+				*(this->camera.lookFrom - intersect.point).normalize()),
 				mat.coeff);
 			totalColor += ambient + diffuse + specular;
 		}
@@ -58,7 +58,7 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 		vec3 lcolor;		//Don't matter variable
 		float tempT = POS_INF;
 		Intersection tempI; //Don't matter variable
-		ptLight->generateLightRay(intersect, &lray, &lcolor); //create ray: intersectvec3 + t*(light - intersectvec3) 
+		ptLight->generateLightRay(intersect, &lray, &lcolor); //create lray: intersect->point + t*(light - intersect->point) 
 		//Color only if path to object not occluded
 		if (!this->closestIntersect(lray, tempT, tempI)){
 
@@ -67,8 +67,8 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 			vec3 diffuse = prod(mat.diffuse, ptLight->color)*max(0.0, I*intersect.normal);
 			vec3 specular = prod(mat.specular, ptLight->color)*
 				pow(max(0.0,
-					((I * -1) + intersect.normal * 2 * I*intersect.normal)
-					*(this->camera.lookFrom - intersect.point)),
+				(-I + (2 * I*intersect.normal)*intersect.normal).normalize()
+					*(this->camera.lookFrom - intersect.point).normalize()),
 				mat.coeff);
 			totalColor += ambient + diffuse + specular;
 		}
@@ -89,7 +89,7 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 	bool hit = this->closestIntersect(ray, minT, intersect);
 	if(hit){
 		Material mat = intersect.shape->material;
-		*color = *color + phongShading(mat, intersect); //NO OPERATOR COLOR* and COLOR
+		*color = *color + phongShading(mat, intersect); 
 		if (mat.reflect[RED] > 0 || mat.reflect[GREEN] > 0 || mat.reflect[BLUE] > 0){
 			std::cout << "Reflected" << std::endl;
 			Ray reflectRay(intersect.point, ray.dir.normalize()-intersect.normal*(intersect.normal*ray.dir.normalize()*2), 0, POS_INF);//define bounce angle/direction
@@ -101,7 +101,7 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 	else{
 		//Hit nothing, paint it black
 		*color = vec3(0, 0, 0);
-		return;
+		return; //actually don't need this
 	}
 }
 

@@ -27,14 +27,15 @@ void Camera::setBoundaries() {
 	float aspectRatio =  this->width / this->height; 
 	float halfWidth = aspectRatio * halfHeight;
 
-	this->upperRight = this->lookAt + vBasis*halfHeight - hBasis*halfWidth;//flipped these
-	this->upperLeft = this->lookAt + vBasis*halfHeight + hBasis*halfWidth;
-	this->lowerRight = this->lookAt - vBasis*halfHeight -hBasis*halfWidth;
-	this->lowerLeft = this->lookAt - vBasis*halfHeight + hBasis*halfWidth;
-	cout << upperLeft << endl;
-	cout << upperRight << endl;
-	cout << lowerLeft << endl;
-	cout << lowerRight << endl;
+	this->upperLeft = this->lookAt + vBasis*halfHeight - hBasis*halfWidth;//flipped these
+	this->upperRight = this->lookAt + vBasis*halfHeight + hBasis*halfWidth;
+	this->lowerLeft = this->lookAt - vBasis*halfHeight -hBasis*halfWidth;
+	this->lowerRight = this->lookAt - vBasis*halfHeight + hBasis*halfWidth;
+	cout << "Image Boundaries" << endl;
+	cout << "UL " << upperLeft << endl;
+	cout << "UR "<< upperRight << endl;
+	cout << "LL " << lowerLeft << endl;
+	cout << "LR "<< lowerRight << endl;
 }
 
 //Ray Camera::generateRay(Sample s){
