@@ -9,7 +9,17 @@ Film::Film(int width, int height) {
 }
 
 void Film::writePixel(int i, int j, vec3 color) {
-	const float colorArray[] = {color[RED], color[GREEN], color[BLUE]};
+	float red = color[RED], green = color[GREEN], blue = color[BLUE];
+	//if (color[RED] > 1.0f){
+	//	red = 1.0f;
+	//}
+	//if (color[GREEN] > 1.0f){
+	//	green = 1.0f;
+	//}
+	//if (color[BLUE] > 1.0f){
+	//	blue = 1.0f;
+	//}
+	const float colorArray[] = {red, green, blue};
 	//FIX FOR MULTIPLE SAMPLES IN ONE PIXEL
 	this->image.draw_point(i , j, colorArray);
 }

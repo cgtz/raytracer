@@ -4,12 +4,12 @@
 
 Scene::Scene()
 {
-	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 200, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),6)));
-	//this->allShapes.push_back(new Sphere(vec3(-200, 0, 0), 150, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),6)));
-	this->allDirLights.push_back(DirLight(vec3(0.9, 1, 1), vec3(1, 1, 1)));
+	this->allShapes.push_back(new Sphere(vec3(200, 0, 0), 150, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),6)));
+	this->allShapes.push_back(new Sphere(vec3(-200, 0, 0), 100, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),3)));
+	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, -1, -1)));
-	this->allPtLights.push_back(PtLight(vec3(1, 1, 0), vec3(0, 0, 0)));
-	this->camera = Camera(vec3(0, 0, -500), vec3(0, 0, 0), vec3(0, 1, 0), 2.35619449, 680, 680);
+	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 0)));
+	this->camera = Camera(vec3(0, 0, 400), vec3(0, 0, 0), vec3(0, 1, 0), 2.35619449, 680, 680);
 	this->film = Film(680, 680);
 }
 
@@ -41,7 +41,7 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 		dirLight->generateLightRay(intersect, &lray, &lcolor); //create ray: intersect->point + t*(dirLight->dir) 
 		//vec3 only if path to object not occluded
 		if (!this->closestIntersect(lray, tempT, tempI)){
-			vec3 I = dirLight->dir * -1;
+			vec3 I = (dirLight->dir * -1).normalize();
 			vec3 ambient = prod(mat.ambient, dirLight->color);
 			//std::cout << ambient << std::endl;
 			vec3 diffuse = prod(mat.diffuse, dirLight->color)*max(0.0, I*intersect.normal);
@@ -72,8 +72,11 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 				mat.coeff);
 			totalColor += ambient + diffuse + specular;
 		}
+		else{
+			//cout << intersect.point << endl;
+		}
 	}
-
+	//cout << totalColor << endl;
 	return totalColor;
 }
 
@@ -88,7 +91,7 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 		Material mat = intersect.shape->material;
 		*color = *color + phongShading(mat, intersect); //NO OPERATOR COLOR* and COLOR
 		if (mat.reflect[RED] > 0 || mat.reflect[GREEN] > 0 || mat.reflect[BLUE] > 0){
-			//std::cout << "Reflected" << std::endl;
+			std::cout << "Reflected" << std::endl;
 			Ray reflectRay(intersect.point, ray.dir.normalize()-intersect.normal*(intersect.normal*ray.dir.normalize()*2), 0, POS_INF);//define bounce angle/direction
 			vec3 reflectedColor;
 			raytrace(reflectRay, depth - 1, &reflectedColor);//CAUTION, reflected same recursion as eye?
@@ -105,14 +108,18 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 void Scene::render(){
 	
 	int step = camera.width/20;
+	int c = 0;
+	cout << "Render start: "<< endl;
 	for (int i=0; i<camera.width; i++){
-		if (i%step == 0)
-			cout << "%";
+		if (i%step == 0){
+			cout << c << "%";
+			c += 5;
+		}
 		for (int j=0; j<camera.height; j++){
 			vec3 pixel = camera.getPixel(i,j);
 			Ray eyeRay= camera.generateRay(pixel);
 			vec3 pixColor(0,0,0);
-			this->raytrace(eyeRay, 3, &pixColor);
+			this->raytrace(eyeRay, 4, &pixColor);
 			film.writePixel(i, j, pixColor);
 		}
 	}

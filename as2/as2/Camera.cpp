@@ -22,13 +22,15 @@ void Camera::setBoundaries() {
 	this->hBasis = (viewDirection^this->up).normalize();
 	this->vBasis = (hBasis^viewDirection).normalize();
 	float halfHeight = tan(this->fov/2) * (this->lookAt - this->lookFrom).length();
-	float halfWidth = this->width/2;
-	float aspectRatio =  halfWidth / halfHeight;
+	//float halfWidth = this->width/2; WROOOOOONG
+	//float aspectRatio = halfWidth / halfHeight; WROOOONG
+	float aspectRatio =  this->width / this->height; 
+	float halfWidth = aspectRatio * halfHeight;
 
-	this->upperLeft = this->lookAt + vBasis*halfHeight - hBasis*halfWidth;
-	this->upperRight = this->lookAt + vBasis*halfHeight + hBasis*halfWidth;
-	this->lowerLeft = this->lookAt - vBasis*halfHeight -hBasis*halfWidth;
-	this->lowerRight = this->lookAt - vBasis*halfHeight + hBasis*halfWidth;
+	this->upperRight = this->lookAt + vBasis*halfHeight - hBasis*halfWidth;//flipped these
+	this->upperLeft = this->lookAt + vBasis*halfHeight + hBasis*halfWidth;
+	this->lowerRight = this->lookAt - vBasis*halfHeight -hBasis*halfWidth;
+	this->lowerLeft = this->lookAt - vBasis*halfHeight + hBasis*halfWidth;
 	cout << upperLeft << endl;
 	cout << upperRight << endl;
 	cout << lowerLeft << endl;
@@ -48,8 +50,8 @@ Ray Camera::generateRay(vec3 pos) {
 }
 
 vec3 Camera::getPixel(int i, int j){
-	float u = float(float(i+.5)/width);
-	float v = float(float(j+.5)/height);
+	float u = float(i+.5)/width;
+	float v = float(j+.5)/height;
 	//return (v*lowerLeft+upperLeft*(1-v))*u+(lowerRight*v+upperRight*(1-v))*(1-u); //scalars * vectors
 	return u*(v*lowerLeft+(1-v)*upperLeft)+(1-u)*(v*lowerRight+(1-v)*upperRight); 
 }
