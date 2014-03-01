@@ -50,7 +50,7 @@ Ray Camera::generateRay(vec3 pos) {
 	return Ray(this->lookFrom, (pos - this->lookFrom).normalize(), 1,POS_INF);
 }
 
-vec3 Camera::getPixel(int i, int j){
+vec3 Camera::getPixel(int i, int j) {
 	float u = float(i+.5)/width;
 	float v = float(j+.5)/height;
 	//return (v*lowerLeft+upperLeft*(1-v))*u+(lowerRight*v+upperRight*(1-v))*(1-u); //scalars * vectors

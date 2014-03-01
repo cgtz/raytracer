@@ -4,12 +4,12 @@
 
 Scene::Scene()
 {
-	this->allShapes.push_back(new Sphere(vec3(200, 0, 0), 150, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),6)));
-	this->allShapes.push_back(new Sphere(vec3(-700, 0, 0), 100, Material(vec3(1, 1, 0), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),3)));
-	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
-	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, -1, -1)));
-	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 0)));
-	this->camera = Camera(vec3(0, 0, 400), vec3(0, 0, 0), vec3(0, 1, 0), 2.35619449, 680, 680);
+	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),64)));
+	this->allShapes.push_back(new Sphere(vec3(100, 100, 0), 100, Material(vec3(1, 1, 0), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),32)));
+	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, -1)));
+	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, 1, 1)));
+	//this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 0)));
+	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 0.47, 680, 680);
 	this->film = Film(680, 680);
 }
 
@@ -91,7 +91,7 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 		Material mat = intersect.shape->material;
 		*color = *color + phongShading(mat, intersect); 
 		if (mat.reflect[RED] > 0 || mat.reflect[GREEN] > 0 || mat.reflect[BLUE] > 0){
-			std::cout << "Reflected" << std::endl;
+			//std::cout << "Reflected" << std::endl;
 			Ray reflectRay(intersect.point, ray.dir.normalize()-intersect.normal*(intersect.normal*ray.dir.normalize()*2), 0, POS_INF);//define bounce angle/direction
 			vec3 reflectedColor;
 			raytrace(reflectRay, depth - 1, &reflectedColor);//CAUTION, reflected same recursion as eye?

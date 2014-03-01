@@ -11,6 +11,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	Scene coolScene = Scene();
 	coolScene.render();
+	//coolScene.film.writeFile("test.jpg");
 
 	return 0;
 }

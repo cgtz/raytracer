@@ -21,7 +21,7 @@ void Film::writePixel(int i, int j, vec3 color) {
 	//}
 	const float colorArray[] = {red, green, blue};
 	//FIX FOR MULTIPLE SAMPLES IN ONE PIXEL
-	this->image.draw_point(i , j, colorArray);
+	this->image.draw_point(width-i , j, colorArray);
 }
 
 void Film::display() {
