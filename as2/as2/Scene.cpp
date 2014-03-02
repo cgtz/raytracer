@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Scene.h"
-
+#include <omp.h>
 
 Scene::Scene()
 {
@@ -62,7 +62,7 @@ bool Scene::closestIntersect(Ray& ray, float& minT, Intersection& closest){
 
 		Ray tempR = ray;
 		tempR.pos = ((*shape)->transform.inverse())*tempR.pos;
-		tempR.dir = vec3(((*shape)->transform.inverse())*vec4(tempR.dir,0),VW).normalize();
+		tempR.dir = vec3(((*shape)->transform.inverse())*vec4(tempR.dir,0),VW);
 
 		if ((*shape)->intersect(tempR, tempT, &tempI)) {
 			if (tempT < minT){
@@ -157,20 +157,28 @@ void Scene::render(){
 	int step = camera.width/20;
 	int c = 0;
 	cout << "Render start: "<< endl;
-	for (int i=0; i<camera.width; i++){
-		if (i%step == 0){
-			cout << c << "%";
-			c += 5;
-		}
-		for (int j=0; j<camera.height; j++){
-			vec3 pixel = camera.getPixel(i,j);
-			Ray eyeRay= camera.generateRay(pixel);
-			vec3 pixColor(0,0,0);
-			this->raytrace(eyeRay, 5, &pixColor);
-			film.writePixel(i, j, pixColor);
+	int width = camera.width;
+	int height = camera.height;
+
+	omp_set_num_threads(8);
+	
+	#pragma omp parallel
+	{
+		#pragma omp for
+		for (int i=0; i<width; i++){
+			if (i%step == 0){
+				cout << c << "%";
+				c += 5;
+			}
+			for (int j=0; j<height; j++){
+				vec3 pixel = camera.getPixel(i,j);
+				Ray eyeRay= camera.generateRay(pixel);
+				vec3 pixColor(0,0,0);
+				this->raytrace(eyeRay, 5, &pixColor);
+				film.writePixel(i, j, pixColor);
+			}
 		}
 	}
 	std::cout << "DONE." << std::endl;
-	film.display();
 }
 
