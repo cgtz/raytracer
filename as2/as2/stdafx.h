@@ -21,6 +21,7 @@
 #include <list>
 //#include <typeinfo>
 #include <algorithm>
+#include <stack>
 #include "algebra3.h"
 
 #define PI 3.14159265

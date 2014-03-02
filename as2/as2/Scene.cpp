@@ -4,11 +4,26 @@
 
 Scene::Scene()
 {
-	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),64)));
-	this->allShapes.push_back(new Sphere(vec3(100, 100, 0), 100, Material(vec3(1, 1, 0), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0,0,0),32)));
-	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, -1)));
+	this->transformation = Transformation();
+	
+	//this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(1, 0, 0),32), transformation));
+	//this->allShapes.push_back(new Sphere(vec3(600, 600, 900), 100, Material(vec3(1, 1, 0), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(1,1,1),32), transformation));
+
+	transformation.scale(vec3(2,0.5,1));
+	//this->allShapes.push_back(new Triangle(vec3(0, -500, 0), vec3(-500,200,0), vec3(500,200,0), Material(vec3(1, 1, 0), vec3(0.0, 0.0, 0.0), vec3(1, 1, 1), vec3(0,0,0),3), transformation));
+
+	transformation.push();
+	transformation.rotate(vec3(0,0,1), 45);
+	//this->allShapes.push_back(new Triangle(vec3(0, -500, -500), vec3(-500,200,-500), vec3(500,200,-500), Material(vec3(1, 1, 0), vec3(0.0, 0.0, 0.0), vec3(1, 1, 1), vec3(0,0,0),3), transformation));
+	
+	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 200, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0, 0, 0),32), transformation));
+	transformation.pop();
+	cout << transformation.transform << endl;
+	//this->allShapes.push_back(new Triangle(vec3(0, 0, 300), vec3(200, 0, 300), vec3(0, 200, 300), Material(vec3(0, 1, 0), vec3(0.0, 0.0, 0.0), vec3(1, 1, 1), vec3(0,0,0),3), transformation));
+
+	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
 	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, 1, 1)));
-	//this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 0)));
+	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(600, 500, 200)));
 	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 0.47, 680, 680);
 	this->film = Film(680, 680);
 }
@@ -61,7 +76,6 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 		ptLight->generateLightRay(intersect, &lray, &lcolor); //create lray: intersect->point + t*(light - intersect->point) 
 		//Color only if path to object not occluded
 		if (!this->closestIntersect(lray, tempT, tempI)){
-
 			vec3 I = (ptLight->pos - intersect.point).normalize();
 			vec3 ambient = prod(mat.ambient, ptLight->color);
 			vec3 diffuse = prod(mat.diffuse, ptLight->color)*max(0.0, I*intersect.normal);
@@ -92,10 +106,14 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 		*color = *color + phongShading(mat, intersect); 
 		if (mat.reflect[RED] > 0 || mat.reflect[GREEN] > 0 || mat.reflect[BLUE] > 0){
 			//std::cout << "Reflected" << std::endl;
-			Ray reflectRay(intersect.point, ray.dir.normalize()-intersect.normal*(intersect.normal*ray.dir.normalize()*2), 0, POS_INF);//define bounce angle/direction
-			vec3 reflectedColor;
+			Ray reflectRay(intersect.point, ray.dir.normalize()-intersect.normal*(intersect.normal*ray.dir.normalize()*2), 1, POS_INF);//define bounce angle/direction
+			vec3 reflectedColor(0,0,0);
 			raytrace(reflectRay, depth - 1, &reflectedColor);//CAUTION, reflected same recursion as eye?
-			*color = *color + reflectedColor;
+			/*if (reflectedColor[RED] != 0 || reflectedColor[GREEN] != 0 || reflectedColor[BLUE] != 0) {
+				cout << reflectedColor << endl;
+				
+			}*/
+			*color = *color + reflectedColor; //prod(reflectedColor, mat.reflect);
 		}
 	}
 	else{

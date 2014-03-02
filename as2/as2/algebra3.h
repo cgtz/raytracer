@@ -320,6 +320,7 @@ public:
 
     // special functions
 
+	double determinant() const;
     mat3 transpose() const; // transpose
     mat3 inverse() const; // inverse
     mat3& apply(V_FCT_PTR fct); // apply a func. to each element
@@ -1184,6 +1185,10 @@ inline const vec3& mat3::operator [](int i) const {
 }
 
 // SPECIAL FUNCTIONS
+
+//inline double mat3::determinant() const{
+//	return v[0][0]
+//}
 
 inline mat3 mat3::transpose() const {
     return mat3(vec3(v[0][0], v[1][0], v[2][0]),

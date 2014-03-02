@@ -4,6 +4,7 @@
 #include "Light.h"
 #include "Camera.h"
 #include "Film.h"
+#include "Transformation.h"
 
 
 
@@ -15,6 +16,8 @@ public:
 	std::list<PtLight> allPtLights;
 	Camera camera;
 	Film film;
+	Transformation transformation;
+
 	Scene();
 	void render();
 	bool closestIntersect(Ray& ray, float& minT, Intersection& closest);
