@@ -2,7 +2,7 @@
 class Transformation
 {
 public:
-	mat4 transform, transformTI;
+	mat4 transform, transformI, transformTI;
 	stack<mat4> pastTransform;
 
 	Transformation();

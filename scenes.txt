@@ -74,3 +74,51 @@ Sexy beast 3Hot5Ellipsoid
 	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 1000)));
 	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 0.47, 680, 680);
 	this->film = Film(680, 680);
+
+
+Something very similar
+----------------------
+	this->transformation = Transformation();
+	
+	transformation.push();
+		transformation.scale(vec3(1,1,1));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 300, Material(vec3(1, 0, 0), vec3(0, 0.6, 0.6), vec3(0, 0, 1), vec3(1, 1, 1),320), transformation));
+	transformation.pop();
+
+	transformation.push();
+		transformation.scale(vec3(2,1,1));
+		transformation.rotate(vec3(0,0,1),-30);
+		transformation.translate(vec3(400,400,0));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(1, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5),320), transformation));
+	transformation.pop();
+
+	transformation.push();
+		transformation.scale(vec3(2,1,1));
+		transformation.rotate(vec3(0,0,1),30);
+		transformation.translate(vec3(-400,400, 0));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(1, 1, 0), vec3(0, 1, 1), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5),320), transformation));
+	transformation.pop();
+
+	transformation.push();
+		transformation.scale(vec3(2,1,1));
+		transformation.rotate(vec3(0,0,1), -30);
+		transformation.translate(vec3(-400,-400, 0));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(0, 1, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5),320), transformation));
+	transformation.pop();
+
+	transformation.push();
+		transformation.scale(vec3(2,1,1));
+		transformation.rotate(vec3(0,0,1),30);
+		transformation.translate(vec3(400,-400, 0));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(0, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5),320), transformation));
+	transformation.pop();
+
+
+	this->allShapes.push_back(new Triangle(vec3(0, 1000, -500),  vec3(-1000,0, -200), vec3(0, -1000, -500), Material(vec3(0, 1, 0), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1,1,1),200), transformation));
+	this->allShapes.push_back(new Triangle(vec3(0, 1000, -500), vec3(0, -1000, -500), vec3(1000,0, -200), Material(vec3(0, 0, 1), vec3(1.0, 0.0, 0.6), vec3(1, 1, 1), vec3(1,1,1),200), transformation));
+
+	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
+	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, 1, 1)));
+	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 1000)));
+	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 0.47, 680, 680);
+	this->film = Film(680, 680);

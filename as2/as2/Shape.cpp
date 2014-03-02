@@ -9,6 +9,7 @@ Shape::Shape(void)
 
 Sphere::Sphere(vec3 center, float radius, Material material, Transformation& transformation) {
 	this->transform = transformation.transform;
+	this->transformI = transformation.transformI;
 	this->transformTI = transformation.transformTI;
 
 	this->center = center;
@@ -37,7 +38,7 @@ bool Sphere::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 		float tNeg = (-b - sqrt(discriminant)) / 2*a;
 		tHit = min(tHit, min( tPos, tNeg));
 		if (tHit >= ray.tMax || tHit <= ray.tMin) return false;
-		intersect->point = ray.evaluate(tHit);
+		intersect->point = transform * ray.evaluate(tHit);
 		intersect->normal  = vec3(transformTI * vec4(intersect->point - this->center, 0),VW).normalize();
 		intersect->shape = this;
 		return true;
@@ -47,6 +48,7 @@ bool Sphere::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 
 Triangle::Triangle(vec3 v1,vec3 v2, vec3 v3, Material material, Transformation& transformation) {
 	this->transform = transformation.transform;
+	this->transformI = transformation.transformI;
 	this->transformTI = transformation.transformTI;
 
 	this->v1 = v1;
@@ -99,12 +101,12 @@ bool Triangle::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 	if (beta < 0 || beta > 1-gamma) return false;
 
 	tHit = t;
-	intersect->point = ray.evaluate(t);
+	intersect->point = transform * ray.evaluate(t);
 	intersect->shape = this;
 	
 	float mag = (v1-intersect->point).length() + (v2-intersect->point).length() + (v3-intersect->point).length();
 
-	intersect->normal = vec3(transformTI * vec4(((v1-intersect->point).length()/mag)*n1 + ((v2-intersect->point).length()/mag)*n2 + ((v3-intersect->point).length()/mag)*n3, 0),VW).normalize();
+	intersect->normal = vec3(transformTI * vec4(((v1-intersect->point).length()/mag)*n1 + ((v2-intersect->point).length()/mag)*n2 + ((v3-intersect->point).length()/mag)*n3, 0), VW).normalize();
 	
 	return true;
 }

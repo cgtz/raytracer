@@ -9,8 +9,7 @@ class Shape
 {
 public:
 	Material material;
-	mat4 transform;
-	mat4 transformTI;
+	mat4 transform, transformI, transformTI;
 
 	Shape(void);
 	virtual bool intersect(Ray& ray, float& tHit, Intersection * intersect){return false;};
