@@ -8,22 +8,46 @@ Scene::Scene()
 	
 	//this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(1, 0, 0),32), transformation));
 	//this->allShapes.push_back(new Sphere(vec3(600, 600, 900), 100, Material(vec3(1, 1, 0), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(1,1,1),32), transformation));
-
-	transformation.scale(vec3(2,0.5,1));
-	//this->allShapes.push_back(new Triangle(vec3(0, -500, 0), vec3(-500,200,0), vec3(500,200,0), Material(vec3(1, 1, 0), vec3(0.0, 0.0, 0.0), vec3(1, 1, 1), vec3(0,0,0),3), transformation));
+	transformation.push();
+		transformation.scale(vec3(4,2,1));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(0.8, 0.1, 0), vec3(1, 0, 0), vec3(1, 1, 1), vec3(1, 1, 1),32), transformation));
+	transformation.pop();
 
 	transformation.push();
-	transformation.rotate(vec3(0,0,1), 45);
-	//this->allShapes.push_back(new Triangle(vec3(0, -500, -500), vec3(-500,200,-500), vec3(500,200,-500), Material(vec3(1, 1, 0), vec3(0.0, 0.0, 0.0), vec3(1, 1, 1), vec3(0,0,0),3), transformation));
-	
-	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 200, Material(vec3(1, 0, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.3, 0.9, 0.8), vec3(0, 0, 0),32), transformation));
+		transformation.scale(vec3(1,1,1));
+		transformation.rotate(vec3(0,0,1),-30);
+		transformation.translate(vec3(400,400,0));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 200, Material(vec3(1, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(1, 1, 1),32), transformation));
 	transformation.pop();
-	cout << transformation.transform << endl;
-	//this->allShapes.push_back(new Triangle(vec3(0, 0, 300), vec3(200, 0, 300), vec3(0, 200, 300), Material(vec3(0, 1, 0), vec3(0.0, 0.0, 0.0), vec3(1, 1, 1), vec3(0,0,0),3), transformation));
+
+	transformation.push();
+		transformation.scale(vec3(1,1,1));
+		transformation.rotate(vec3(0,0,1),30);
+		transformation.translate(vec3(-400,400, 0));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 200, Material(vec3(1, 1, 0), vec3(0, 1, 1), vec3(1, 1, 1), vec3(1, 1, 1),32), transformation));
+	transformation.pop();
+
+	transformation.push();
+		transformation.scale(vec3(1,1,1));
+		transformation.rotate(vec3(0,0,1), -30);
+		transformation.translate(vec3(-400,-400, 0));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 200, Material(vec3(0, 1, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(1, 1, 1),32), transformation));
+	transformation.pop();
+
+	transformation.push();
+		transformation.scale(vec3(1,1,1));
+		transformation.rotate(vec3(0,0,1),30);
+		transformation.translate(vec3(400,-400, 0));
+		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 200, Material(vec3(0, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(1, 1, 1),32), transformation));
+	transformation.pop();
+
+
+	this->allShapes.push_back(new Triangle(vec3(0, 1000, -500), vec3(0, -1000, -500), vec3(-1000,0, -200), Material(vec3(1, 1, 0), vec3(0.0, 0.0, 0.0), vec3(1, 1, 1), vec3(1,1,1),200), transformation));
+	this->allShapes.push_back(new Triangle(vec3(0, 1000, -500), vec3(0, -1000, -500), vec3(1000,0, -200), Material(vec3(1, 1, 0), vec3(0.0, 0.0, 0.0), vec3(1, 1, 1), vec3(1,1,1),200), transformation));
 
 	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
 	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, 1, 1)));
-	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(600, 500, 200)));
+	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 1000)));
 	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 0.47, 680, 680);
 	this->film = Film(680, 680);
 }
@@ -35,7 +59,12 @@ bool Scene::closestIntersect(Ray& ray, float& minT, Intersection& closest){
 	for (auto shape = this->allShapes.begin(); shape != this->allShapes.end(); shape++){
 		float tempT = POS_INF;
 		Intersection tempI;
-		if ((*shape)->intersect(ray, tempT, &tempI)) {
+
+		Ray tempR = ray;
+		tempR.pos = ((*shape)->transform.inverse())*tempR.pos;
+		tempR.dir = vec3(((*shape)->transform.inverse())*vec4(tempR.dir,0),VW).normalize();
+
+		if ((*shape)->intersect(tempR, tempT, &tempI)) {
 			if (tempT < minT){
 				minT = tempT;
 				closest = tempI; //CAUTION
@@ -137,7 +166,7 @@ void Scene::render(){
 			vec3 pixel = camera.getPixel(i,j);
 			Ray eyeRay= camera.generateRay(pixel);
 			vec3 pixColor(0,0,0);
-			this->raytrace(eyeRay, 4, &pixColor);
+			this->raytrace(eyeRay, 5, &pixColor);
 			film.writePixel(i, j, pixColor);
 		}
 	}
