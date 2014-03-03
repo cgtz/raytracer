@@ -3,13 +3,14 @@
 
 
 
-Camera::Camera(vec3 lookFrom, vec3 lookAt, vec3 up, float fov, float width, float height) {
+Camera::Camera(vec3 lookFrom, vec3 lookAt, vec3 up, float fov, float width, float height, float apR) {
 	this->lookFrom = lookFrom;
 	this->lookAt = lookAt;
 	this->up = up;
 	this->fov = fov;
 	this->width = width;
 	this->height = height;
+	this->apR = apR;
 	if (fov > PI || fov < 0) {
 		std::cout << "BAD FOV" << std::endl;
 		exit(0);
@@ -19,15 +20,19 @@ Camera::Camera(vec3 lookFrom, vec3 lookAt, vec3 up, float fov, float width, floa
 
 void Camera::setBoundaries() {
 	vec3 viewDirection = this->lookAt - this->lookFrom;
+	this->focalDist = viewDirection.length();
 	this->hBasis = (viewDirection^this->up).normalize();
 	this->vBasis = (hBasis^viewDirection).normalize();
-	float halfHeight = tan(this->fov/2) * (this->lookAt - this->lookFrom).length();
+	float halfHeight = tan(this->fov/2) * focalDist;
 	//float halfWidth = this->width/2; WROOOOOONG
 	//float aspectRatio = halfWidth / halfHeight; WROOOONG
 	float aspectRatio =  this->width / this->height; 
 	float halfWidth = aspectRatio * halfHeight;
 
-	this->upperLeft = this->lookAt + vBasis*halfHeight - hBasis*halfWidth;//flipped these
+	this->apX = hBasis * this->apR;
+	this->apY = vBasis * this->apR;
+
+	this->upperLeft = this->lookAt + vBasis*halfHeight - hBasis*halfWidth;
 	this->upperRight = this->lookAt + vBasis*halfHeight + hBasis*halfWidth;
 	this->lowerLeft = this->lookAt - vBasis*halfHeight -hBasis*halfWidth;
 	this->lowerRight = this->lookAt - vBasis*halfHeight + hBasis*halfWidth;
@@ -47,7 +52,10 @@ void Camera::setBoundaries() {
 //}
 
 Ray Camera::generateRay(vec3 pos) {
-	return Ray(this->lookFrom, (pos - this->lookFrom).normalize(), 1,POS_INF);
+	float randx = (rand() / float(RAND_MAX)) * 2 - 1;
+	float randy = (rand() / float(RAND_MAX)) * 2 - 1;
+	vec3 randEye = this->lookFrom + this->apX*randx + this->apY*randy;
+	return Ray(this->lookFrom, (pos - randEye).normalize(), 1, POS_INF);
 }
 
 vec3 Camera::getPixel(int i, int j) {

@@ -14,15 +14,19 @@
 
 // TODO: reference additional headers your program requires here
 #include <iostream>
+
 #include <stdlib.h>
 #include <string>
 #include <cmath>
+#include <math.h>
 #include <limits>
 #include <list>
 //#include <typeinfo>
 #include <algorithm>
 #include <stack>
 #include "algebra3.h"
+
+
 
 #define PI 3.14159265
 #define POS_INF std::numeric_limits<float>::max()
