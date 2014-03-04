@@ -8,18 +8,18 @@ Scene::Scene()
 	
 	transformation.push();
 		transformation.scale(vec3(1,1,1));
-		this->allShapes.push_back(new Sphere(vec3(-300, 0, 200), 300, Material(vec3(1, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(1,1, 1), 16, vec3(0,0,0), 2.42), transformation));
+		this->allShapes.push_back(new Sphere(vec3(-100, 0, 200), 300, Material(vec3(1, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(1,1, 1), 16, vec3(0,0,0), 2.42), transformation));
 	transformation.pop();
 
 	transformation.push();
 	transformation.scale(vec3(1, 1, 1));
-	this->allShapes.push_back(new Sphere(vec3(200, 0, -1500), 300, Material(vec3(1,1,0), vec3(0,1,1), vec3(1, 1, 1), vec3(1, 1, 1), 16, vec3(0,0,0), 2.42), transformation));
+	this->allShapes.push_back(new Sphere(vec3(300, 0, -800), 300, Material(vec3(1,1,0), vec3(0,1,1), vec3(1, 1, 1), vec3(1, 1, 1), 16, vec3(0,0,0), 2.42), transformation));
 	transformation.pop();
 
-	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
+	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-.2, 0, 1)));
 	//this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, 0, 1)));
 	this->allPtLights.push_back(PtLight(vec3(1, 0, 1), vec3(500, 500 , 500)));
-	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 0.47, 680, 680,5);
+	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 0.47, 680, 680,2);
 	this->film = Film(680, 680);
 }
 
@@ -154,9 +154,9 @@ void Scene::render(){
 
 	//omp_set_num_threads(8);
 	
-	//#pragma omp parallel
-	//{
-	//#pragma omp for 
+	#pragma omp parallel
+	{
+	#pragma omp for 
 		for (int i=0; i<width; i++){
 			if (i%step == 0){
 				cout << c << "%";
@@ -165,16 +165,16 @@ void Scene::render(){
 			for (int j=0; j<height; j++){
 				vec3 pixel = camera.getPixel(i, j);
 				vec3 totalPix(0, 0, 0);
-				for (int c = 0; c < 8; c++){
+				for (int c = 0; c < 4; c++){
 					Ray eyeRay = camera.generateRay(pixel);
 					vec3 pixColor(0, 0, 0);
 					this->raytrace(eyeRay, 6, &pixColor);
 					totalPix += pixColor;
 				}
-				film.writePixel(i, j, totalPix/ 8.0);
+				film.writePixel(i, j, totalPix/ 4.0);
 			}
 		}
-	//}
+	}
 	std::cout << " DONE." << std::endl;
 }
 
