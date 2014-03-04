@@ -7,10 +7,11 @@ Camera::Camera(vec3 lookFrom, vec3 lookAt, vec3 up, float fov, float width, floa
 	this->lookFrom = lookFrom;
 	this->lookAt = lookAt;
 	this->up = up;
-	this->fov = fov;
+	this->fov = fov*PI/180;
+	
 	this->width = width;
 	this->height = height;
-	if (fov > PI || fov < 0) {
+	if (this->fov > PI || this->fov < 0.0) {
 		std::cout << "BAD FOV" << std::endl;
 		exit(0);
 	}

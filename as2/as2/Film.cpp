@@ -25,7 +25,7 @@ void Film::writePixel(int i, int j, vec3 color) {
 }
 
 void Film::display() {
-	cimg_library::CImgDisplay disp(image, "Hah");
+	cimg_library::CImgDisplay disp(image, "RayTracer Output");
 	while (true) {
 		disp.wait();
 	}

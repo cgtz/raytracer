@@ -19,6 +19,7 @@ class Sphere: public Shape {
 public:
 	vec3 center;
 	float radius;
+	Sphere(vec3 center, float radius, Transformation& transformation);
 	Sphere(vec3 center, float radius, Material material, Transformation& transformation);
 	bool intersect(Ray& ray, float& tHit, Intersection* intersect);
 

@@ -17,8 +17,10 @@ public:
 	Camera camera;
 	Film film;
 	Transformation transformation;
+	int depth;
 
 	Scene();
+	Scene(int depth);
 	void render();
 	bool closestIntersect(Ray& ray, float& minT, Intersection& closest);
 	void raytrace(Ray& ray, int depth, vec3* color);

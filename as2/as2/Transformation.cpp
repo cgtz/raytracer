@@ -20,19 +20,19 @@ void Transformation::pop() {
 }
 
 void Transformation::translate(vec3 offset) {
-	this->transform = translation3D(offset) * transform;
+	this->transform = transform * translation3D(offset);
 	this->transformI = this->transform.inverse();
 	this->transformTI = this->transformI.transpose();
 }
 
 void Transformation::scale(vec3 scale) {
-	this->transform = scaling3D(scale) * transform;
+	this->transform = transform * scaling3D(scale);
 	this->transformI = this->transform.inverse();
 	this->transformTI = this->transform.inverse().transpose();
 }
 
 void Transformation::rotate(vec3 axis, float angle) {
-	this->transform = rotation3D(axis, angle) * transform;
+	this->transform = transform * rotation3D(axis, angle);
 	this->transformI = this->transform.inverse();
 	this->transformTI = this->transformI.transpose();
 }

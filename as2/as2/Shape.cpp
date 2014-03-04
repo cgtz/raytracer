@@ -7,6 +7,16 @@ Shape::Shape(void)
 {
 }
 
+Sphere::Sphere(vec3 center, float radius, Transformation& transformation) {
+	this->transform = transformation.transform;
+	this->transformI = transformation.transformI;
+	this->transformTI = transformation.transformTI;
+
+	this->center = center;
+	this->radius = radius;
+	this->material = Material(vec3(0.2,0.2,0.2), vec3(0,0,0), vec3(0,0,0), vec3(0,0,0), 1);
+}
+
 Sphere::Sphere(vec3 center, float radius, Material material, Transformation& transformation) {
 	this->transform = transformation.transform;
 	this->transformI = transformation.transformI;
@@ -64,6 +74,7 @@ Triangle::Triangle(vec3 v1,vec3 v2, vec3 v3, Material material, Transformation& 
 
 Triangle::Triangle(vec3 v1,vec3 v2, vec3 v3, vec3 n1, vec3 n2, vec3 n3, Material material, Transformation& transformation) {
 	this->transform = transformation.transform;
+	this->transformI = transformation.transformI;
 	this->transformTI = transformation.transformTI;
 
 	this->v1 = v1;
