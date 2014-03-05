@@ -71,9 +71,11 @@ bool Scene::closestIntersect(Ray& ray, float& minT, Intersection& closest){
 
 		Ray tempR = ray;
 
-		tempR.pos = vec3(((*shape)->transformI)*vec4(tempR.pos,1),VW);
-		tempR.dir = vec3(((*shape)->transformI)*vec4(tempR.dir,0),VW);
-		
+		if ((*shape)->isSphere) {
+			tempR.pos = vec3(((*shape)->transformI)*vec4(tempR.pos,1),VW);
+			tempR.dir = vec3(((*shape)->transformI)*vec4(tempR.dir,0),VW);
+		}
+
 		if ((*shape)->intersect(tempR, tempT, &tempI)) {
 			if (tempT < minT){
 				minT = tempT;
@@ -92,10 +94,11 @@ bool Scene::closestIntersect(Ray& ray){
 		Intersection tempI;
 
 		Ray tempR = ray;
+		if ((*shape)->isSphere) {
+			tempR.pos = vec3(((*shape)->transformI)*vec4(tempR.pos,1),VW);
+			tempR.dir = vec3(((*shape)->transformI)*vec4(tempR.dir,0),VW);
+		}
 
-		tempR.pos = vec3(((*shape)->transformI)*vec4(tempR.pos,1),VW);
-		tempR.dir = vec3(((*shape)->transformI)*vec4(tempR.dir,0),VW);
-		
 		if ((*shape)->intersect(tempR)) {
 			return true;
 		}

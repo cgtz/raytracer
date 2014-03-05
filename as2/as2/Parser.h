@@ -79,7 +79,7 @@ void loadScene(std::string file, Scene& scene) {
 			//sphere x y z radius
 			//  Deﬁnes a sphere with a given position and radius.
 			else if(!splitline[0].compare("sphere")) {
-				scene.allShapes.push_back(new Sphere(vec3(atof(splitline[1].c_str()), atof(splitline[1].c_str()), atof(splitline[1].c_str())), atof(splitline[4].c_str()), currMat, scene.transformation));
+				scene.allShapes.push_back(new Sphere(vec3(atof(splitline[1].c_str()), atof(splitline[2].c_str()), atof(splitline[3].c_str())), atof(splitline[4].c_str()), currMat, scene.transformation));
 			}
 			//maxverts number
 			//  Deﬁnes a maximum number of vertices for later triangle speciﬁcations. 
@@ -248,7 +248,15 @@ void loadScene(std::string file, Scene& scene) {
 			else if(!splitline[0].compare("emission")) {
 				currMat.emissive= vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str()));
 				// Update current properties
-			} else {
+			} 
+			//reflection r g b
+			//  gives the reflection color of the surface.
+			else if(!splitline[0].compare("reflect")) {
+				currMat.reflect= vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str()));
+				// Update current properties
+			} 
+			//unknown command
+			else {
 				std::cerr << "Unknown command: " << splitline[0] << std::endl;
 			}
 		}

@@ -14,8 +14,8 @@ size 640 480
 
 # There are 3 camera positions.  Make images for all 3
 
-camera -2 -2 2 0 0 0 1 1 2 60
-#camera +2 +2 2 0 0 0 -1 -1 2 60
+# camera -2 -2 2 0 0 0 1 1 2 60
+camera +2 +2 2 0 0 0 -1 -1 2 60
 #camera -2 -2 -2 0 0 0 -1 -1 2 60
 
 
@@ -36,60 +36,63 @@ vertex -1 +1 +1
 # calculations, I am just using ambient to define the colors.
 # No lighting calculations should be performed since I haven't defined any 
 # lights.
-
-ambient .5 0 .5 
-# face -Y
-tri 0 1 5 
-tri 0 5 4 
-ambient .5 1 .5 
-# face +Y
-tri 3 7 6
-tri 3 6 2
-ambient 1 .5 .5 
-# face +X
-tri 1 2 6
-tri 1 6 5 
-ambient 0 .5 .5 
-# face -X
-tri 0 7 3 
-tri 0 4 7 
-ambient .5 .5 0
-# face -Z
-tri 0 3 2 
-tri 0 2 1
-ambient .5 .5 1
-# face +Z
-tri 4 5 6 
-tri 4 6 7 
+reflect 1 1 1
+specular 1 1 1
+diffuse 0 0 .5
+shininess 320
+# # face -Y
+# tri 0 1 5 
+# tri 0 5 4 
+# emission .5 1 .5 
+# # face +Y
+# tri 3 7 6
+# tri 3 6 2
+# emission 1 .5 .5 
+# # face +X
+# tri 1 2 6
+# tri 1 6 5 
+# emission 0 .5 .5 
+# # face -X
+# tri 0 7 3 
+# tri 0 4 7 
+# emission .5 .5 0
+# # face -Z
+# tri 0 3 2 
+# tri 0 2 1
+# emission .5 .5 1
+# # face +Z
+# tri 4 5 6 
+# tri 4 6 7 
 
 # Make spheres
-ambient 1 1 1
+emission 0.1 0.1 0.1
 
-sphere 1 0 0 0.15
+sphere 1 0 0 0.2
 
-sphere -.5 1 -.5 0.15
-sphere +.5 1 +.5 0.15
+sphere -.5 1 -.5 0.2
+sphere +.5 1 +.5 0.2
 
-sphere 0 0 1 0.15
-sphere -.5 -.5 1 0.15
-sphere +.5 +.5 1 0.15
+sphere 0 0 1 0.2
+sphere -.5 -.5 1 0.2
+sphere +.5 +.5 1 0.2
 
-sphere -1 -.5 -.5 0.15
-sphere -1 -.5 +.5 0.15
-sphere -1 +.5 +.5 0.15
-sphere -1 +.5 -.5 0.15
+sphere -1 -.5 -.5 0.2
+sphere -1 -.5 +.5 0.2
+sphere -1 +.5 +.5 0.2
+sphere -1 +.5 -.5 0.2
 
-sphere -.5 -1 -.5 0.15
-sphere -.5 -1 +.5 0.15
-sphere +.5 -1 +.5 0.15
-sphere +.5 -1 -.5 0.15
-sphere  0 -1 0 0.15
+sphere -.5 -1 -.5 0.2
+sphere -.5 -1 +.5 0.2
+sphere +.5 -1 +.5 0.2
+sphere +.5 -1 -.5 0.2
+sphere  0 -1 0 0.2
 
-sphere -.5 -.5 -1 0.15
-sphere -.5   0 -1 0.15
-sphere -.5 +.5 -1 0.15
-sphere +.5 -.5 -1 0.15
-sphere +.5   0 -1 0.15
-sphere +.5 +.5 -1 0.15 
+sphere -.5 -.5 -1 0.2
+sphere -.5   0 -1 0.2
+sphere -.5 +.5 -1 0.2
+sphere +.5 -.5 -1 0.2
+sphere +.5   0 -1 0.2
+sphere +.5 +.5 -1 0.2 
 
-directional 0 0 1 1 1 1
+directional -1 -1 -1 1 1 1
+point 1.5 1.5 1.5 1 1 1

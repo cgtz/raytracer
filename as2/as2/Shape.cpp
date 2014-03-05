@@ -89,10 +89,12 @@ Triangle::Triangle(vec3 v1,vec3 v2, vec3 v3, Material material, Transformation& 
 	this->transformI = transformation.transformI;
 	this->transformTI = transformation.transformTI;
 
-	this->v1 = v1;
-	this->v2 = v2;
-	this->v3 = v3;
+	this->v1 = transform*v1;
+	this->v2 = transform*v2;
+	this->v3 = transform*v3;
+
 	this->isSphere=false;
+
 	this->material = material;
 
 	this->n1 = ((v2-v1)^(v3-v1)).normalize();
@@ -110,7 +112,9 @@ Triangle::Triangle(vec3 v1,vec3 v2, vec3 v3, vec3 n1, vec3 n2, vec3 n3, Material
 	this->v3 = v3;
 
 	this->material = material;
+
 	this->isSphere=false;
+
 	this->n1 = n1.normalize();
 	this->n2 = n2.normalize();
 	this->n3 = n3.normalize();
@@ -140,12 +144,12 @@ bool Triangle::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 	if (beta < 0 || beta > 1-gamma) return false;
 
 	tHit = t;
-	intersect->point = transform * ray.evaluate(t);
+	intersect->point = ray.evaluate(t);
 	intersect->shape = this;
 	
 	float mag = (v1-intersect->point).length() + (v2-intersect->point).length() + (v3-intersect->point).length();
 
-	intersect->normal = vec3(transformTI * vec4(((v1-intersect->point).length()/mag)*n1 + ((v2-intersect->point).length()/mag)*n2 + ((v3-intersect->point).length()/mag)*n3, 0), VW).normalize();
+	intersect->normal = (((v1-intersect->point).length()/mag)*n1 + ((v2-intersect->point).length()/mag)*n2 + ((v3-intersect->point).length()/mag)*n3).normalize();
 	
 	return true;
 }

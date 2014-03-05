@@ -27,7 +27,8 @@ pushTransform
 # instancing to make this simpler.  Alternatively, define a ray-cube 
 # intersection test.
 
-emission .7 .7 1
+ambient .7 .7 1
+reflect 1 1 1
 
 scale 2 1 .25
 tri 0 1 5 
@@ -49,7 +50,8 @@ pushTransform
 # Now, I draw the 4 legs of the table.
 # Note that like OpenGL, commands right-multiply
 
-emission .7 .7 .4
+emission 0.1 0.1 0.1
+
 
 translate -1.75 -.8 -.25 
 translate 0 0 -2.0 
@@ -173,3 +175,6 @@ pushTransform
 translate -1.5 .8 0.65
 scale 0.4 0.4 0.4
 sphere 0 0 0 1
+
+point 0 -4 4 1 1 1
+point 0 4 4 1 1 1
