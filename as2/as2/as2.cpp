@@ -18,8 +18,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	/*cout << scene.allDirLights.front().color << endl;
 	cout << scene.allDirLights.front().dir << endl;*/
-	cout << scene.allPtLights.size() << endl;
-	cout << scene.allDirLights.size() << endl;
+	/*cout << scene.allPtLights.size() << endl;
+	cout << scene.allDirLights.size() << endl;*/
 	//cout << scene.allShapes.size() << endl;
 	//cout << scene.allShapes.front()->material.ambient << endl;
 	//cout << scene.depth << endl;

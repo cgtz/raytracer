@@ -73,7 +73,7 @@ bool Scene::closestIntersect(Ray& ray, float& minT, Intersection& closest){
 
 		tempR.pos = vec3(((*shape)->transformI)*vec4(tempR.pos,1),VW);
 		tempR.dir = vec3(((*shape)->transformI)*vec4(tempR.dir,0),VW);
-
+		
 		if ((*shape)->intersect(tempR, tempT, &tempI)) {
 			if (tempT < minT){
 				minT = tempT;
@@ -82,7 +82,26 @@ bool Scene::closestIntersect(Ray& ray, float& minT, Intersection& closest){
 			}
 		}
 	}
+	
 	return hit;
+}
+
+bool Scene::closestIntersect(Ray& ray){
+	for (auto shape = this->allShapes.begin(); shape != this->allShapes.end(); shape++){
+		float tempT = POS_INF;
+		Intersection tempI;
+
+		Ray tempR = ray;
+
+		tempR.pos = vec3(((*shape)->transformI)*vec4(tempR.pos,1),VW);
+		tempR.dir = vec3(((*shape)->transformI)*vec4(tempR.dir,0),VW);
+		
+		if ((*shape)->intersect(tempR)) {
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 vec3 Scene::phongShading(Material mat, Intersection intersect) {
@@ -90,11 +109,10 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 	for (auto dirLight = this->allDirLights.begin(); dirLight != this->allDirLights.end(); dirLight++){
 		Ray lray;			
 		vec3 lcolor;		//Don't matter variable
-		float tempT = POS_INF;
-		Intersection tempI; //Don't matter variable
+
 		dirLight->generateLightRay(intersect, &lray, &lcolor); //create ray: intersect->point + t*(dirLight->dir) 
 		//color only if path to object not occluded
-		if (!this->closestIntersect(lray, tempT, tempI)){
+		if (!this->closestIntersect(lray)){
 			vec3 I = (dirLight->dir * -1).normalize();
 			vec3 ambient = prod(mat.ambient, dirLight->color);
 			vec3 diffuse = prod(mat.diffuse, dirLight->color)*max(0.0, I*intersect.normal);
@@ -113,7 +131,7 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 		Intersection tempI; //Don't matter variable
 		ptLight->generateLightRay(intersect, &lray, &lcolor); //create lray: intersect->point + t*(light - intersect->point) 
 		//Color only if path to object not occluded
-		if (!this->closestIntersect(lray, tempT, tempI)){
+		if (!this->closestIntersect(lray)){
 			vec3 I = (ptLight->pos - intersect.point).normalize();
 			vec3 ambient = prod(mat.ambient, ptLight->color);
 			vec3 diffuse = prod(mat.diffuse, ptLight->color)*max(0.0, I*intersect.normal);
