@@ -5,60 +5,32 @@
 Scene::Scene() {
 	this->transformation = Transformation();
 	this->depth = 5;
-
+	this->distrib = 1;
 }
 
-Scene::Scene(int depth)
+Scene::Scene(int depth, int distrib, int apR)
 {
 	this->transformation = Transformation();
 	this->depth = depth;
-	transformation.push();
-		transformation.scale(vec3(1,1,1));
-		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 300, Material(vec3(1, 0, 0), vec3(0, 0.6, 0.6), vec3(0, 0, 1), vec3(1, 1, 1),320), transformation));
+	this->transformation.push();
+	transformation.scale(vec3(3,1,1));
+	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 500, Material(vec3(0.1, 0.1, 0.1), vec3(0.1, 0, 0.1), vec3(0, 0, 1), vec3(0, 0, 0), 320, vec3(0, 0, 0),vec3(0.9,0.9,0.9), 2.5), transformation));
 	transformation.pop();
+	this->allShapes.push_back(new Sphere(vec3(-500, -500, -1000), 300, Material(vec3(1, 0, 0), vec3(1, 0, 0), vec3(0, 0, 1), vec3(1, 1, 0), 320, vec3(1, 0, 0),vec3(0.4,0.4,0.4)), transformation));
+	
+	this->allShapes.push_back(new Triangle(vec3(-5000, -5000, -3000), vec3(-5000,5000,-3000),vec3(10000,-10000,-3000), Material(vec3(0, 0.5, 0.3), vec3(0, 1, 1), vec3(0, 0, 1), vec3(1, 1, 1), 320, vec3(0, 0, 0),vec3(0,0,0)), transformation));
+	this->allShapes.push_back(new Triangle(vec3(5000, 5000, -3000), vec3(10000,-10000,-3000), vec3(-5000,5000,-3000),Material(vec3(0, 0.5, 0.3), vec3(0, 1, 1), vec3(0, 0, 1), vec3(1, 1, 1), 320, vec3(0, 0, 0),vec3(0,0,0)), transformation));
 
-	transformation.push();
-		transformation.scale(vec3(2,1,1));
-		transformation.rotate(vec3(0,0,1),-90);
-		transformation.translate(vec3(400,0,0));
-		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(1, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5),320), transformation));
-	transformation.pop();
+	this->allShapes.push_back(new Sphere(vec3(1000, 1000, -500), 300, Material(vec3(0.5, 0.5, 0.5), vec3(0, 0, 0), vec3(0, 0, 1), vec3(0, 0, 0),320, vec3(0,0,0),vec3(1,1,1)), transformation));
 
-	transformation.push();
-		transformation.scale(vec3(2,1,1));
-		transformation.rotate(vec3(0,0,1),90);
-		transformation.translate(vec3(-400,0, 0));
-		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(1, 1, 0), vec3(0, 1, 1), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5),320), transformation));
-	transformation.pop();
+	this->allShapes.push_back(new Sphere(vec3(0, -100, 500), 300, Material(vec3(0.5, 0.5, 0.5), vec3(0, 0, 0), vec3(0, 0, 1), vec3(0, 0, 0), 320, vec3(0, 0, 0),vec3(1,1,1)), transformation));
 
-	transformation.push();
-		transformation.scale(vec3(2,1,1));
-		//transformation.rotate(vec3(0,0,1), -30);
-		transformation.translate(vec3(0,-400, 0));
-		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(0, 1, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5),320), transformation));
-	transformation.pop();
-
-	transformation.push();
-		transformation.scale(vec3(2,1,1));
-		//transformation.rotate(vec3(0,0,1),30);
-		transformation.translate(vec3(0,400, 0));
-		this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(0, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5),320), transformation));
-	transformation.pop();
-
-	this->allShapes.push_back(new Triangle(vec3(-200, 400, -1000), vec3(-1000, 0, 0), vec3(-200,-400, -1000), Material(vec3(0, 0, 0), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1,1,1),500), transformation));
-	this->allShapes.push_back(new Triangle(vec3(200, 400, -1000),  vec3(200,-400, -1000), vec3(1000, 0, 0), Material(vec3(0, 0, 0), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1,1,1),500), transformation));
-	this->allShapes.push_back(new Triangle(vec3(-200, 400, -1000), vec3(200, 400, -1000), vec3(0, 1000, 0),  Material(vec3(0, 0, 0), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1,1,1),500), transformation));
-	this->allShapes.push_back(new Triangle(vec3(-200, -400, -1000), vec3(0, -1000, 0), vec3(200,-400, -1000), Material(vec3(0, 0, 0), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1,1,1),500), transformation));
-
-	this->allShapes.push_back(new Triangle(vec3(-10000, -10000, -4000), vec3(10000, 10000, -4000), vec3(-10000, 10000, -4000), Material(vec3(0, 0, 0), vec3(0.8, 0.5, 0.8), vec3(1, 1, 1), vec3(1,1,1),200), transformation));
-	this->allShapes.push_back(new Triangle(vec3(-10000, -10000, -4000), vec3(10000,-10000, -4000), vec3(10000, 10000, -4000), Material(vec3(0, 0, 0), vec3(0.8, 0.5, 0.8), vec3(1, 1, 1), vec3(1,1,1),200), transformation));
-
-	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
-	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(-1, 1, 1)));
-	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, 1000)));
-	this->allPtLights.push_back(PtLight(vec3(1, 1, 1), vec3(0, 0, -3000)));
-	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 40, 680, 680);
+	//this->allDirLights.push_back( DirLight(vec3(1, 1, 1), vec3(40, 23, -50)));
+	//this->allPtLights.push_back(PtLight(vec3(1,1,1), vec3(0,0,1000)));
+	this->allPtLights.push_back(PtLight(vec3(1,1,1), vec3(-1000,500,1000)));
+	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 40, 680, 680, apR);
 	this->film = Film(680, 680);
+	this->distrib = distrib;
 }
 
 
@@ -159,10 +131,39 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 		Material mat = intersect.shape->material;
 		*color = *color + phongShading(mat, intersect); 
 		if (mat.reflect[RED] > 0 || mat.reflect[GREEN] > 0 || mat.reflect[BLUE] > 0){
-			Ray reflectRay(intersect.point, ray.dir.normalize()-intersect.normal*(intersect.normal*ray.dir.normalize()*2), 1, POS_INF);//define bounce angle/direction
+			Ray reflectRay(intersect.point, ray.dir.normalize()-intersect.normal*(intersect.normal*ray.dir.normalize()*2), 0.8, POS_INF);//define bounce angle/direction
 			vec3 reflectedColor(0,0,0);
 			raytrace(reflectRay, depth - 1, &reflectedColor);//CAUTION, reflected same recursion as eye?
-			*color = *color + reflectedColor; //prod(reflectedColor, mat.reflect);
+			*color += prod(reflectedColor, mat.reflect);
+		}
+		if (mat.refract[RED] > 0 || mat.refract[GREEN] > 0 || mat.refract[BLUE] > 0){
+			Ray transRay(intersect.point, vec3(0,0,0), 0.8, POS_INF);
+			transRay.pos = intersect.point;
+			vec3 v = (intersect.point - ray.pos).normalize();
+			float nv = intersect.normal*v;
+			if (nv < 0) {
+				//cout << "blahh" << endl;
+				float nr = 1/mat.indexRefract;
+				float discriminant = 1 - nr*nr*(1 - nv*nv);
+				if (discriminant >= 0) {
+					transRay.dir = ((nr*nv - sqrt(discriminant))*intersect.normal -nr*(-v)).normalize();
+					/*cout << transRay.dir << endl;*/
+
+					vec3 refractedColor(0,0,0);
+					raytrace(transRay, depth-1, &refractedColor);
+					*color += prod(refractedColor, mat.refract);
+				}
+			} else {
+				float nr = mat.indexRefract;
+				float discriminant = 1 - (nr * nr) * (1 - ((-intersect.normal)*(-ray.dir))*((-intersect.normal)*(-ray.dir)));
+				//cout << "wahh" << endl;
+				if (discriminant >= 0) {
+					transRay.dir = ((nr *(-intersect.normal)*(-ray.dir) - sqrt(discriminant)) * (-intersect.normal) - (nr * (-ray.dir))).normalize(); 
+					vec3 refractedColor(0,0,0);
+					raytrace(transRay, depth-1, &refractedColor);
+					*color += prod(refractedColor, mat.refract);
+				}
+			}
 		}
 	}
 	else{
@@ -190,15 +191,25 @@ void Scene::render(){
 				cout << c << "%";
 				c += 5;
 			}
+
 			for (int j=0; j<height; j++){
 				vec3 pixel = camera.getPixel(i,j);
-				Ray eyeRay= camera.generateRay(pixel);
-				vec3 pixColor(0,0,0);
-				this->raytrace(eyeRay, this->depth, &pixColor);
-				film.writePixel(i, j, pixColor);
+				vec3 totalPix(0, 0, 0);
+				for (int c = 0; c < this->distrib; c++){
+					Ray eyeRay = camera.generateRay(pixel);
+					vec3 pixColor(0, 0, 0);
+					raytrace(eyeRay, this->depth, &pixColor);
+					totalPix += pixColor;
+				}
+				film.writePixel(i, j, totalPix/this->distrib);
 			}
 		}
 	}
+
+	//float a = POS_INF;
+	//Intersection b;
+	//cout << closestIntersect(Ray(vec3(0,0,0),vec3(0,0,-1), 0.01, POS_INF),a,b);
+
 	std::cout << " DONE." << std::endl;
 }
 

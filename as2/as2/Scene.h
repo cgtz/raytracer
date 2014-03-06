@@ -18,9 +18,10 @@ public:
 	Film film;
 	Transformation transformation;
 	int depth;
+	int distrib;
 
 	Scene();
-	Scene(int depth);
+	Scene(int depth, int distrib = 4, int apR=50);
 	void render();
 	bool closestIntersect(Ray& ray, float& minT, Intersection& closest);
 	bool closestIntersect(Ray& ray);

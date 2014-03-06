@@ -46,8 +46,10 @@ bool Sphere::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 	if (discriminant >= 0){
 		float tPos = (-b + sqrt(discriminant)) / (2.0f*a);
 		float tNeg = (-b - sqrt(discriminant)) / (2.0f*a);
-		tHit = min(tHit, min( tPos, tNeg));
+
+		tHit =/* (tNeg<0 && tPos>0)? tPos :*/ tNeg;
 		if (tHit >= ray.tMax || tHit <= ray.tMin) return false;
+
 		intersect->point = vec3(transform * vec4(ray.evaluate(tHit),1),VW);
 		intersect->normal  = vec3(transformTI * vec4(intersect->point - this->center, 0),VW).normalize();
 		intersect->shape = this;
@@ -72,13 +74,15 @@ bool Sphere::intersect(Ray& ray) {
 	}
 
 	float discriminant = b*b - 4*a*c;
-
+	
 	//float tMin = std::numeric_limits<float>::max();
 	if (discriminant >= 0){
 		float tPos = (-b + sqrt(discriminant)) / (2.0f*a);
 		float tNeg = (-b - sqrt(discriminant)) / (2.0f*a);
-		tHit = min(tHit, min(tPos, tNeg));
+
+		tHit = /*(tNeg<0 && tPos>0)? tPos :*/ tNeg;
 		if (tHit >= ray.tMax || tHit <= ray.tMin) return false;
+
 		return true;
 	}
 	return false; 

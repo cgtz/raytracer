@@ -2,7 +2,7 @@
 # Intended to show transforms
 # I know it's not the most exciting of scenes...
 
-size 640 480 
+size 640 480
 
 camera 0 -4 4 0 -1 0 0 1 1 45
 
@@ -27,7 +27,7 @@ pushTransform
 # instancing to make this simpler.  Alternatively, define a ray-cube 
 # intersection test.
 
-ambient .7 .7 1
+emission .7 .7 1
 reflect 1 1 1
 
 scale 2 1 .25

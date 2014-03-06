@@ -13,7 +13,7 @@ void loadScene(std::string file, Scene& scene) {
 	//Camera variables
 	int width = 0, height = 0;
 	vec3 lookAt(0,0,0), lookFrom(0,0,0), up(0,0,0);
-	float fov = 0;
+	float fov = 0, apR = 0;
 
 	Material currMat = Material(vec3(0,0,0), vec3(0,0,0), vec3(0,0,0), vec3(0,0,0), 0, vec3(0,0,0));
 
@@ -74,6 +74,18 @@ void loadScene(std::string file, Scene& scene) {
 				 lookAt = vec3(atof(splitline[4].c_str()), atof(splitline[5].c_str()), atof(splitline[6].c_str()));
 				 up = vec3(atof(splitline[7].c_str()), atof(splitline[8].c_str()), atof(splitline[9].c_str()));
 				 fov = atof(splitline[10].c_str());
+			}
+
+			//aperture radius
+			//specifies aperture size for depth of field computations, default zero
+			else if(!splitline[0].compare("aperture")) {
+				 apR = atof(splitline[1].c_str());
+			}
+
+			//distrib number
+			//specifies number of random samples per pixel, default one
+			else if(!splitline[0].compare("distrib")) {
+				scene.distrib = atoi(splitline[1].c_str());
 			}
 
 			//sphere x y z radius
@@ -263,7 +275,7 @@ void loadScene(std::string file, Scene& scene) {
 
 		inpfile.close();
 	}
-	scene.camera = Camera(lookFrom, lookAt, up, fov, width, height);
+	scene.camera = Camera(lookFrom, lookAt, up, fov, width, height, apR);
 	scene.film = Film(width,height);
 
 	//cout << scene.allDirLights.size() << endl;

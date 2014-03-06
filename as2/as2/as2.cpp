@@ -10,24 +10,42 @@
 using namespace std;
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
-	time_t start = time(NULL);
-	Scene scene = Scene();
-	loadScene("scene3.test",scene);
 	
-	/*cout << scene.allDirLights.front().color << endl;
-	cout << scene.allDirLights.front().dir << endl;*/
-	/*cout << scene.allPtLights.size() << endl;
-	cout << scene.allDirLights.size() << endl;*/
-	//cout << scene.allShapes.size() << endl;
-	//cout << scene.allShapes.front()->material.ambient << endl;
-	//cout << scene.depth << endl;
-	//cout << scene.camera.lookFrom << endl;
+
+	bool write = false, disp = true;
+	string inputFile, writeFile;
+
+	Scene scene = Scene(5,1,0);
+
+	for (int i = 1; i < argc; i++){
+		if (strcmp(argv[i], "-i") == 0){
+			inputFile = string(argv[i + 1]);
+			i++;
+		} else if (strcmp(argv[i], "-w") == 0){
+			write = true;
+			writeFile = string(argv[i+1]);
+			i++;
+		} else if (strcmp(argv[i], "-nd") == 0){
+			disp = false;
+		}
+	}
+	
+	cout << "Input File: " << inputFile << endl;
+	if (write) cout << "Output File: "<< writeFile << endl;
+	if (disp) cout << "Display on" << endl;
+
+	cout << endl;
+	//loadScene(inputFile,scene);
+
+	time_t start = time(NULL);
 	scene.render();
-	scene.film.writeFile("test.jpg");
 	time_t end = time(NULL);
-	cout <<  difftime(end, start) << " seconds elapsed" << endl;
-	scene.film.display();
+	cout << "Render Time: "<<  difftime(end, start) << " seconds" << endl;
+
+	if (write) scene.film.writeFile(writeFile);
+	if (disp) scene.film.display();
+
 	return 0;
 }
