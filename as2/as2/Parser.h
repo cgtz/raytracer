@@ -15,7 +15,7 @@ void loadScene(std::string file, Scene& scene) {
 	vec3 lookAt(0,0,0), lookFrom(0,0,0), up(0,0,0);
 	float fov = 0, apR = 0;
 
-	Material currMat = Material(vec3(0,0,0), vec3(0,0,0), vec3(0,0,0), vec3(0,0,0), 0, vec3(0,0,0));
+	Material currMat = Material(vec3(0,0,0), vec3(0,0,0), vec3(0,0,0), vec3(0,0,0), 0, vec3(0,0,0), vec3(0,0,0));
 
 	vector<vec3> vertices;
 	vector<pair<vec3,vec3>> vertexNormals;
@@ -266,6 +266,24 @@ void loadScene(std::string file, Scene& scene) {
 			else if(!splitline[0].compare("reflect")) {
 				currMat.reflect= vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str()));
 				// Update current properties
+			} 
+
+			//refraction r g b
+			//  gives the refraction color of the surface.
+			else if(!splitline[0].compare("refract")) {
+				currMat.refract= vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str()));
+				// Update current properties
+			} 
+			//environment front back left right top bottom
+			// specify six environment mapping image files to form sides of cube
+			else if(!splitline[0].compare("environment")) {
+				scene.environment = true;
+				scene.front = cimg_library::CImg<double>(splitline[1].c_str());
+				scene.back = cimg_library::CImg<double>(splitline[2].c_str());
+				scene.left = cimg_library::CImg<double>(splitline[3].c_str());
+				scene.right = cimg_library::CImg<double>(splitline[4].c_str());
+				scene.top = cimg_library::CImg<double>(splitline[5].c_str());
+				scene.bottom = cimg_library::CImg<double>(splitline[6].c_str());
 			} 
 			//unknown command
 			else {

@@ -6,31 +6,44 @@ Scene::Scene() {
 	this->transformation = Transformation();
 	this->depth = 5;
 	this->distrib = 1;
+	this->environment = false;
 }
 
 Scene::Scene(int depth, int distrib, int apR)
 {
 	this->transformation = Transformation();
 	this->depth = depth;
-	this->transformation.push();
-	transformation.scale(vec3(3,1,1));
-	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 500, Material(vec3(0.1, 0.1, 0.1), vec3(0.1, 0, 0.1), vec3(0, 0, 1), vec3(0, 0, 0), 320, vec3(0, 0, 0),vec3(0.9,0.9,0.9), 2.5), transformation));
-	transformation.pop();
-	this->allShapes.push_back(new Sphere(vec3(-500, -500, -1000), 300, Material(vec3(1, 0, 0), vec3(1, 0, 0), vec3(0, 0, 1), vec3(1, 1, 0), 320, vec3(1, 0, 0),vec3(0.4,0.4,0.4)), transformation));
 	
-	this->allShapes.push_back(new Triangle(vec3(-5000, -5000, -3000), vec3(-5000,5000,-3000),vec3(10000,-10000,-3000), Material(vec3(0, 0.5, 0.3), vec3(0, 1, 1), vec3(0, 0, 1), vec3(1, 1, 1), 320, vec3(0, 0, 0),vec3(0,0,0)), transformation));
-	this->allShapes.push_back(new Triangle(vec3(5000, 5000, -3000), vec3(10000,-10000,-3000), vec3(-5000,5000,-3000),Material(vec3(0, 0.5, 0.3), vec3(0, 1, 1), vec3(0, 0, 1), vec3(1, 1, 1), 320, vec3(0, 0, 0),vec3(0,0,0)), transformation));
 
-	this->allShapes.push_back(new Sphere(vec3(1000, 1000, -500), 300, Material(vec3(0.5, 0.5, 0.5), vec3(0, 0, 0), vec3(0, 0, 1), vec3(0, 0, 0),320, vec3(0,0,0),vec3(1,1,1)), transformation));
+			//this->allShapes.push_back(new Sphere(vec3(0,0,0), 600, Material(vec3(1, 0, 0), vec3(1, 0, 0), vec3(1, 1, 1), vec3(0, 0, 0), 4, vec3(0, 0, 0),vec3(0,0,0)), transformation));
+	
+	//this->allShapes.push_back(new Sphere(vec3(-100, 200, 1000), 100, Material(vec3(0, 0, 0), vec3(0.5, .5, 0), vec3(.3, .3, 0), vec3(1, 1, 1), 10, vec3(0,0,0),vec3(1,1,1)), transformation));
 
-	this->allShapes.push_back(new Sphere(vec3(0, -100, 500), 300, Material(vec3(0.5, 0.5, 0.5), vec3(0, 0, 0), vec3(0, 0, 1), vec3(0, 0, 0), 320, vec3(0, 0, 0),vec3(1,1,1)), transformation));
+	//this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(0,0,1), vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1), 320, vec3(0, 0, 0),vec3(0,0,0)), transformation));
 
-	//this->allDirLights.push_back( DirLight(vec3(1, 1, 1), vec3(40, 23, -50)));
-	//this->allPtLights.push_back(PtLight(vec3(1,1,1), vec3(0,0,1000)));
-	this->allPtLights.push_back(PtLight(vec3(1,1,1), vec3(-1000,500,1000)));
+	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 700, Material(vec3(0, 0, 0), vec3(0, 0.3, 0.8), vec3(1, 0, 1), vec3(0.8, 0.8, 0.8), 10, vec3(0, 0, 0), vec3(0, 0, 0)), transformation));
+
+
+	transformation.push();
+	transformation.scale(vec3(4, 4, 10));
+	//this->allShapes.push_back(new Triangle(vec3(-1000, -300, 0), vec3(0, -800, -2000), vec3(1000, -300, 0), Material(vec3(0, 0, 1), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1, 1, 1), 16, vec3(0,0, 1), vec3(0, 0, 0)), transformation));
+	transformation.pop();
+	//this->allPtLights.push_back(PtLight(vec3(1,1,1), vec3(500,1000,500)));
+	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(0,1,0)));
+	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
+	this->allDirLights.push_back(DirLight(vec3(1, 1, 0), vec3(-1, -1, 0)));
+
+
 	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 40, 680, 680, apR);
 	this->film = Film(680, 680);
 	this->distrib = distrib;
+
+	this->front = cimg_library::CImg<double>("back.jpg");
+	this->back = cimg_library::CImg<double>("front.jpg");
+	this->left = cimg_library::CImg<double>("left.jpg");
+	this->right = cimg_library::CImg<double>("right.jpg");
+	this->top = cimg_library::CImg<double>("top.jpg");
+	this->bottom = cimg_library::CImg<double>("bottom.jpg");
 }
 
 
@@ -121,6 +134,62 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 	return totalColor;
 }
 
+vec2 Scene::computeUV(double a, double b, double c) {
+	return vec2((a+c)/(2*c), (b+c)/(2*c));
+}
+
+vec3 Scene::cubeMap(vec3& ray) {
+	vec2 index;
+
+	double x=ray[VX], y=ray[VY], z=ray[VZ];
+	
+	if (-z>=fabs(x) && -z>=fabs(y)) { //back
+		index = computeUV(x, y, z);
+		//cout<<index<<endl;
+		return vec3(front(index[VX]*front.width(), index[VY]*front.height(), 0, 0)/255,
+					front(index[VX]*front.width(), index[VY]*front.height(), 0, 1)/255,
+					front(index[VX]*front.width(), index[VY]*front.height(), 0, 2)/255);
+	} 
+	else if (z>fabs(x) && z>=fabs(y)) { //front
+		index = computeUV(-x, y, -z);
+		//cout<<index<<endl;
+		return vec3(back(index[VX]*back.width(), index[VY]*back.height(), 0, 0)/255,
+					back(index[VX]*back.width(), index[VY]*back.height(), 0, 1)/255,
+					back(index[VX]*back.width(), index[VY]*back.height(), 0, 2)/255);
+	} 
+	else if (-x>fabs(y) && -x>=fabs(z)) { //left
+		index = computeUV(-z, y, x);
+		//cout<<index<<endl;
+		//if (left(index[VX]*2048, index[VY]*2048, 0, 0)>1) cout<<left(index[VX]*2048, index[VY]*2048, 0, 0)<<endl;
+		return vec3(left(index[VX]*left.width(), index[VY]*left.height(), 0, 0)/255,
+					left(index[VX]*left.width(), index[VY]*left.height(), 0, 1)/255,
+					left(index[VX]*left.width(), index[VY]*left.height(), 0, 2)/255);
+	} 
+	else if (x>=fabs(y) && x>=fabs(z)) { //right
+		index = computeUV(z, y, -x);
+		//cout<<index<<endl;
+		return vec3(right(index[VX]*right.width(), index[VY]*right.height(), 0, 0)/255,
+					right(index[VX]*right.width(), index[VY]*right.height(), 0, 1)/255,
+					right(index[VX]*right.width(), index[VY]*right.height(), 0, 2)/255);
+	} 
+	else if (y>=fabs(z) && y>=fabs(x)) { //top
+		index = computeUV(x, z, y);
+		//cout<<index<<endl;
+		return vec3(top(index[VX]*top.width(), index[VY]*top.height(), 0, 0)/255,
+					top(index[VX]*top.width(), index[VY]*top.height(), 0, 1)/255,
+					top(index[VX]*top.width(), index[VY]*top.height(), 0, 2)/255);
+	} 
+	else if (-y>fabs(z) && -y>=fabs(x)) { //bottom
+		index = computeUV(x, -z, -y);
+		/*cout<<index<<endl;*/
+		return vec3(bottom(index[VX]*bottom.width(), index[VY]*bottom.height(), 0, 0)/255,
+					bottom(index[VX]*bottom.width(), index[VY]*bottom.height(), 0, 1)/255,
+					bottom(index[VX]*bottom.width(), index[VY]*bottom.height(), 0, 2)/255);
+	} 
+	return vec3(0,0,0);
+	//get color from index
+}
+
 void Scene::raytrace(Ray& ray, int depth, vec3* color){
 	if (depth <= 0) return;
 
@@ -161,15 +230,15 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 					transRay.dir = ((nr *(-intersect.normal)*(-ray.dir) - sqrt(discriminant)) * (-intersect.normal) - (nr * (-ray.dir))).normalize(); 
 					vec3 refractedColor(0,0,0);
 					raytrace(transRay, depth-1, &refractedColor);
-					*color += prod(refractedColor, mat.refract);
+					*color = prod(refractedColor, mat.refract);
 				}
 			}
 		}
 	}
 	else{
 		//Hit nothing, paint it black
-		*color = vec3(0, 0, 0);
-		return; //actually don't need this
+		*color = environment? cubeMap(ray.dir): vec3(0,0,0);
+		return;
 	}
 }
 

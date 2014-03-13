@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 	bool write = false, disp = true;
 	string inputFile, writeFile;
 
-	Scene scene = Scene(5,1,0);
+	Scene scene = Scene();
 
 	for (int i = 1; i < argc; i++){
 		if (strcmp(argv[i], "-i") == 0){
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 	if (disp) cout << "Display on" << endl;
 
 	cout << endl;
-	//loadScene(inputFile,scene);
+	loadScene(inputFile,scene);
 
 	time_t start = time(NULL);
 	scene.render();

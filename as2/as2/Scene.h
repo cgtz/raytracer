@@ -17,14 +17,18 @@ public:
 	Camera camera;
 	Film film;
 	Transformation transformation;
-	int depth;
-	int distrib;
+	int depth, distrib;
+	bool environment;
+
+	cimg_library::CImg<double> front, back, top, bottom, left, right;
 
 	Scene();
 	Scene(int depth, int distrib = 4, int apR=50);
 	void render();
 	bool closestIntersect(Ray& ray, float& minT, Intersection& closest);
 	bool closestIntersect(Ray& ray);
+	vec2 computeUV(double a, double b, double c);
+	vec3 cubeMap(vec3& ray);
 	void raytrace(Ray& ray, int depth, vec3* color);
 	vec3 phongShading(Material mat, Intersection intersect);
 	

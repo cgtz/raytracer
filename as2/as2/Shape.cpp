@@ -47,11 +47,14 @@ bool Sphere::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 		float tPos = (-b + sqrt(discriminant)) / (2.0f*a);
 		float tNeg = (-b - sqrt(discriminant)) / (2.0f*a);
 
-		tHit =/* (tNeg<0 && tPos>0)? tPos :*/ tNeg;
+		tHit = /*(tNeg<0 && tPos>0)? tPos :*/ tNeg;
 		if (tHit >= ray.tMax || tHit <= ray.tMin) return false;
 
 		intersect->point = vec3(transform * vec4(ray.evaluate(tHit),1),VW);
 		intersect->normal  = vec3(transformTI * vec4(intersect->point - this->center, 0),VW).normalize();
+		//if (tNeg<0 && tPos>0) {
+		//	intersect->normal = -1*intersect->normal;
+		//}
 		intersect->shape = this;
 		return true;
 	}
