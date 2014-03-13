@@ -163,8 +163,8 @@ void loadScene(std::string file, Scene& scene) {
 			//  A translation 3-vector
 			else if(!splitline[0].compare("translate")) {
 				scene.transformation.translate(vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str())));
-				cout << "translation" << vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str())) << endl << endl;
-				cout << scene.transformation.transform << endl << endl << endl;
+				//cout << "translation" << vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str())) << endl << endl;
+				//cout << scene.transformation.transform << endl << endl << endl;
 				// Update top of matrix stack
 			}
 			//rotate x y z angle
@@ -186,7 +186,7 @@ void loadScene(std::string file, Scene& scene) {
 			//   the camera to preserve the “identity” transformation.
 			else if(!splitline[0].compare("pushTransform")) {
 				scene.transformation.push();
-				cout<<"PUSH"<<endl;
+				//cout<<"PUSH"<<endl;
 				//mst.push();
 			}
 			//popTransform
@@ -197,7 +197,7 @@ void loadScene(std::string file, Scene& scene) {
 			//  discussed above).
 			else if(!splitline[0].compare("popTransform")) {
 				scene.transformation.pop();
-				cout<<"POP"<<endl;
+				//cout<<"POP"<<endl;
 				//mst.pop();
 			}
 
@@ -291,6 +291,11 @@ void loadScene(std::string file, Scene& scene) {
 				scene.top = cimg_library::CImg<double>(splitline[5].c_str());
 				scene.bottom = cimg_library::CImg<double>(splitline[6].c_str());
 			} 
+			//antialiasing
+			// turn antialiasing on / off
+			else if (!splitline[0].compare("antialiasing")) {
+				scene.antialiasing = true;
+			}
 			//unknown command
 			else {
 				std::cerr << "Unknown command: " << splitline[0] << std::endl;

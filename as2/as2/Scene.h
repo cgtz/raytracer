@@ -18,7 +18,8 @@ public:
 	Film film;
 	Transformation transformation;
 	int depth, distrib;
-	bool environment;
+	bool environment, antialiasing;
+
 
 	cimg_library::CImg<double> front, back, top, bottom, left, right;
 
