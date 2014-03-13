@@ -17,5 +17,5 @@ directional  1 1 1 1 1 1
 directional  -1 -1 0 1 1 0
 
 
-environment front.jpg back.jpg left.jpg right.jpg top.jpg bottom.jpg
+environment escher\\front.jpg escher\\back.jpg escher\\left.jpg escher\\right.jpg escher\\top.jpg escher\\bottom.jpg
 	

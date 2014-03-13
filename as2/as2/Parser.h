@@ -177,8 +177,7 @@ void loadScene(std::string file, Scene& scene) {
 			//  Scale by the corresponding amount in each axis (a non-uniform scaling).
 			else if(!splitline[0].compare("scale")) {
 				scene.transformation.scale(vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str())));
-				cout << "scale" << vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str())) << endl << endl;
-				cout << scene.transformation.transform << endl << endl << endl;
+				//cout << "scale" << vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str())) << endl << endl;
 				// Update top of matrix stack
 			}
 			//pushTransform
@@ -274,6 +273,13 @@ void loadScene(std::string file, Scene& scene) {
 				currMat.refract= vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str()));
 				// Update current properties
 			} 
+			//indexRefract 
+			//  gives the index of refraction
+			else if (!splitline[0].compare("indexRefract")) {
+				currMat.indexRefract = atof(splitline[1].c_str());
+				// Update current properties
+			}
+
 			//environment front back left right top bottom
 			// specify six environment mapping image files to form sides of cube
 			else if(!splitline[0].compare("environment")) {

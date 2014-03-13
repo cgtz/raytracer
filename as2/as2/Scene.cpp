@@ -282,3 +282,10 @@ void Scene::render(){
 	std::cout << " DONE." << std::endl;
 }
 
+void Scene::debug(){
+	cout << "Recursive depth: " << depth << endl;
+	cout << "D samples: " << distrib << endl;
+	cout << "# shapes: " << allShapes.size() << endl;
+	cout << "# lights: " << allPtLights.size() + allDirLights.size() << endl;
+	cout << endl;
+}

@@ -31,6 +31,8 @@ public:
 	vec3 cubeMap(vec3& ray);
 	void raytrace(Ray& ray, int depth, vec3* color);
 	vec3 phongShading(Material mat, Intersection intersect);
+
+	void debug();
 	
 };
 
