@@ -198,13 +198,13 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 		Material mat = intersect.shape->material;
 		*color = *color + phongShading(mat, intersect);
 		if (mat.reflect[RED] > 0 || mat.reflect[GREEN] > 0 || mat.reflect[BLUE] > 0){
-			Ray reflectRay(intersect.point, ray.dir.normalize() - intersect.normal*(intersect.normal*ray.dir.normalize() * 2), 0.8, POS_INF);//define bounce angle/direction
+			Ray reflectRay(intersect.point, ray.dir.normalize() - intersect.normal*(intersect.normal*ray.dir.normalize() * 2), 2, POS_INF);//define bounce angle/direction
 			vec3 reflectedColor(0, 0, 0);
 			raytrace(reflectRay, depth - 1, &reflectedColor);//CAUTION, reflected same recursion as eye?
 			*color += prod(reflectedColor, mat.reflect);
 		}
 		if (mat.refract[RED] > 0 || mat.refract[GREEN] > 0 || mat.refract[BLUE] > 0){
-			Ray transRay(intersect.point, vec3(0, 0, 0), 0.8, POS_INF);
+			Ray transRay(intersect.point, vec3(0, 0, 0), 2, POS_INF);
 			transRay.pos = intersect.point;
 			vec3 v = (intersect.point - ray.pos).normalize();
 			float nv = intersect.normal*v;

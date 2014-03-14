@@ -15,8 +15,8 @@ size 640 480
 # There are 3 camera positions.  Make images for all 3
 
 # camera -2 -2 2 0 0 0 1 1 2 60
-camera +2 +2 2 1 1 1 -1 -1 2 60
-#camera -2 -2 -2 0 0 0 -1 -1 2 60
+#camera +2 +2 2 1 1 1 -1 -1 2 60
+camera -2 -2 -2 0 0 0 -1 -1 2 60
 
 
 # Now specify the geometry.  First the cube, then the spheres
@@ -39,79 +39,93 @@ vertex -1 +1 +1
 
 
 # face -Y
-ambient 1 1 1
+ambient .5 1 .5
+diffuse 0 1 0
+specular 0 1 0
+shininess 16
 refract  1 1 1 
 tri 0 1 5 
 tri 0 5 4 
 
 # face +Y
-ambient 1 1 1
-refract 1 1 1
+ambient 1 .5 .5 
+diffuse 1 0 0 
+specular 1 0 0
+reflect 1 1 1
 tri 3 7 6
 tri 3 6 2
 
 # face +X
-ambient 1 1 1
-refract 1 1 1
+ambient 0 .5 .5
+diffuse 0 0 .5
+specular 0 0 .5 
+reflect 1 1 1
 tri 1 2 6
 tri 1 6 5 
 
 # face -X
-ambient 1 1 1
-refract 1 1 1
+ambient .5 .5 0
+diffuse 1 0 0
+specular 1 0 0
+reflect 1 1 1
 tri 0 7 3 
 tri 0 4 7 
 
 # face -Z
-ambient 1 1 1
-refract 1 1 1
+ambient .5 .5 1
+diffuse 0 0 1
+specular 0 0 1
+reflect 1 1 1
 tri 0 3 2 
 tri 0 2 1
 
 # face +Z
-ambient 1 1 1
+ambient .5 .5 1
+diffuse 0 0 1
+specular 0 0 1
 reflect 1 1 1
 tri 4 5 6 
 tri 4 6 7 
 
-# # Make spheres
-# emission 0.1 0.1 0.1
+# Make spheres
+ambient 0 0 0
+diffuse 0 0 0
+specular 0 0 0
+emission 0.1 0.1 0.1
+refract 1 1 1
 
-# sphere 1 0 0 0.2
+sphere 1 0 0 0.2
 
-# sphere -.5 1 -.5 0.2
-# sphere +.5 1 +.5 0.2
+sphere -.5 1 -.5 0.2
+sphere +.5 1 +.5 0.2
 
-# sphere 0 0 1 0.2
-# sphere -.5 -.5 1 0.2
-# sphere +.5 +.5 1 0.2
+sphere 0 0 1 0.2
+sphere -.5 -.5 1 0.2
+sphere +.5 +.5 1 0.2
 
-# sphere -1 -.5 -.5 0.2
-# sphere -1 -.5 +.5 0.2
-# sphere -1 +.5 +.5 0.2
-# sphere -1 +.5 -.5 0.2
+sphere -1 -.5 -.5 0.2
+sphere -1 -.5 +.5 0.2
+sphere -1 +.5 +.5 0.2
+sphere -1 +.5 -.5 0.2
 
-# sphere -.5 -1 -.5 0.2
-# sphere -.5 -1 +.5 0.2
-# sphere +.5 -1 +.5 0.2
-# sphere +.5 -1 -.5 0.2
-# sphere  0 -1 0 0.2
+sphere -.5 -1 -.5 0.2
+sphere -.5 -1 +.5 0.2
+sphere +.5 -1 +.5 0.2
+sphere +.5 -1 -.5 0.2
+sphere  0 -1 0 0.2
 
-# sphere -.5 -.5 -1 0.2
-# sphere -.5   0 -1 0.2
-# sphere -.5 +.5 -1 0.2
-# sphere +.5 -.5 -1 0.2
-# sphere +.5   0 -1 0.2
-# sphere +.5 +.5 -1 0.2 
+sphere -.5 -.5 -1 0.2
+sphere -.5   0 -1 0.2
+sphere -.5 +.5 -1 0.2
+sphere +.5 -.5 -1 0.2
+sphere +.5   0 -1 0.2
+sphere +.5 +.5 -1 0.2 
 
-# environment cube\\front.jpg cube\\back.jpg cube\\left.jpg cube\\right.jpg cube\\top.jpg cube\\bottom.jpg
 
 directional  0 1 0 1 1 1
-directional  1 1 1 1 1 1
-directional  -1 -1 0 1 1 0
-
-# directional  0 1 0 1 1 1
-# directional  1 0 0 1 1 1
-# directional  0 0 1 1 1 1
+directional  1 0 0 1 1 1
+directional  0 0 1 1 1 1
 
 point 0 0 0 1 1 1
+
+# environment escher\\front.jpg escher\\back.jpg escher\\left.jpg escher\\right.jpg escher\\top.jpg escher\\bottom.jpg
