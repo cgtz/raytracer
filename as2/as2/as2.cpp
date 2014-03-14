@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
 
 	Scene scene;
 
-	if (argc > 0){
+
+
+	if (argc > 1){
 		scene = Scene();
 		for (int i = 1; i < argc; i++){
 			if (strcmp(argv[i], "-i") == 0){
@@ -46,7 +48,7 @@ int main(int argc, char* argv[])
 		scene.debug();
 	}
 	else {
-		scene = Scene(5, 1, 0); //for testing purposes only
+		scene = Scene(2, 1, 0); //for testing purposes only
 		scene.debug(); //move outside
 	}
 

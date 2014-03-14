@@ -14,7 +14,11 @@ Scene::Scene(int depth, int distrib, int apR)
 {
 	this->transformation = Transformation();
 	this->depth = depth;
-
+	this->environment = false;
+	this->antialiasing = false;
+	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 40, 680, 680, apR);
+	this->film = Film(680, 680);
+	this->distrib = distrib;
 
 	//this->allShapes.push_back(new Sphere(vec3(0,0,0), 600, Material(vec3(1, 0, 0), vec3(1, 0, 0), vec3(1, 1, 1), vec3(0, 0, 0), 4, vec3(0, 0, 0),vec3(0,0,0)), transformation));
 
@@ -22,29 +26,22 @@ Scene::Scene(int depth, int distrib, int apR)
 
 	//this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(0,0,1), vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1), 320, vec3(0, 0, 0),vec3(0,0,0)), transformation));
 
-	this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 700, Material(vec3(0, 0, 0), vec3(0, 0.3, 0.8), vec3(1, 0, 1), vec3(0.8, 0.8, 0.8), 10, vec3(0, 0, 0), vec3(0, 0, 0)), transformation));
+	this->allShapes.push_back(new Sphere(vec3(-100, 0, 0), 200, Material(vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 0), 0, vec3(1, 0, 0), vec3(0, 0, 0)), transformation));
 
 
-	transformation.push();
-	transformation.scale(vec3(4, 4, 10));
-	//this->allShapes.push_back(new Triangle(vec3(-1000, -300, 0), vec3(0, -800, -2000), vec3(1000, -300, 0), Material(vec3(0, 0, 1), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1, 1, 1), 16, vec3(0,0, 1), vec3(0, 0, 0)), transformation));
-	transformation.pop();
+	//transformation.push();
+	//transformation.scale(vec3(4, 4, 10));
+	////this->allShapes.push_back(new Triangle(vec3(-1000, -300, 0), vec3(0, -800, -2000), vec3(1000, -300, 0), Material(vec3(0, 0, 1), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1, 1, 1), 16, vec3(0,0, 1), vec3(0, 0, 0)), transformation));
+	//transformation.pop();
 	//this->allPtLights.push_back(PtLight(vec3(1,1,1), vec3(500,1000,500)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(0, 1, 0)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 0), vec3(-1, -1, 0)));
 
 
-	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 40, 680, 680, apR);
-	this->film = Film(680, 680);
-	this->distrib = distrib;
 
-	this->front = cimg_library::CImg<double>("back.jpg");
-	this->back = cimg_library::CImg<double>("front.jpg");
-	this->left = cimg_library::CImg<double>("left.jpg");
-	this->right = cimg_library::CImg<double>("right.jpg");
-	this->top = cimg_library::CImg<double>("top.jpg");
-	this->bottom = cimg_library::CImg<double>("bottom.jpg");
+
+
 }
 
 
@@ -254,33 +251,64 @@ void Scene::render(){
 
 	//omp_set_num_threads(8);
 
-#pragma omp parallel
-	{
-#pragma omp for
-		for (int i = 0; i < width; i++){
-			if (i%step == 0){
-				cout << c << "%";
-				c += 5;
-			}
-			for (int j = 0; j < height; j++){
-				vec3 pixel = camera.getPixel(i, j);
-				vec3 totalPix(0, 0, 0);
-				for (int p = 0; p < 4; p++){
-					for (int q = 0; q < 4; q++){
-						for (int c = 0; c < this->distrib; c++){
-							pixel[VX] += p + (rand() / float(RAND_MAX));
-							pixel[VY] += q + (rand() / float(RAND_MAX));
-							Ray eyeRay = camera.generateRay(pixel);
-							vec3 pixColor(0, 0, 0);
-							raytrace(eyeRay, this->depth, &pixColor);
-							totalPix += pixColor;
-						}
-					}
+	#pragma omp parallel
+		{
+	#pragma omp for
+			for (int i = 0; i < width; i++){
+				if (i%step == 0){
+					cout << c << "%";
+					c += 5;
 				}
-				film.writePixel(i, j, totalPix / (this->distrib * 16));
+				for (int j = 0; j < height; j++){
+					vec3 pixel = camera.getPixel(i, j);
+					vec3 totalPix(0, 0, 0);
+					//for (int p = 0; p < 4; p++){
+					//	for (int q = 0; q < 4; q++){
+							for (int c = 0; c < this->distrib; c++){
+								//pixel[VX] += p + (rand() / float(RAND_MAX));
+								//pixel[VY] += q + (rand() / float(RAND_MAX));
+								Ray eyeRay = camera.generateRay(pixel);
+								vec3 pixColor(0, 0, 0);
+								raytrace(eyeRay, this->depth, &pixColor);
+								totalPix += pixColor;
+							}
+					//	}
+					//}
+					film.writePixel(i, j, totalPix / (this->distrib));
+				}
 			}
 		}
-	}
+
+//#pragma omp parallel
+//	{
+//#pragma omp for
+//		for (int i = 0; i < width; i++){
+//			if (i%step == 0){
+//				cout << c << "%";
+//				c += 5;
+//			}
+//			for (int j = 0; j < height; j++){
+//				vec3 pixel = camera.getPixel(i, j);
+//				vec3 totalPix(0, 0, 0);
+//				for (int p = 0; p < 6; p++){
+//					float randomT = p; // (rand() / float(RAND_MAX))*(5 - 1);
+//					for (auto shape = this->allShapes.begin(); shape != this->allShapes.end(); shape++){
+//						(*shape)->moveShape(randomT);
+//					}
+//					Ray eyeRay = camera.generateRay(pixel);
+//					//eyeRay.tMin = randomT;
+//					vec3 pixColor(0, 0, 0);
+//					raytrace(eyeRay, this->depth, &pixColor);
+//					totalPix += pixColor;
+//					for (auto shape = this->allShapes.begin(); shape != this->allShapes.end(); shape++){
+//						(*shape)->restoreShape();
+//					}
+//				}
+//				film.writePixel(i, j, totalPix / (this->distrib*12));
+//			}
+//		}
+//	}
+
 	std::cout << " DONE." << std::endl;
 }
 
@@ -289,5 +317,6 @@ void Scene::debug(){
 	cout << "D samples: " << distrib << endl;
 	cout << "# shapes: " << allShapes.size() << endl;
 	cout << "# lights: " << allPtLights.size() + allDirLights.size() << endl;
+	cout << "Antialiasing: " << antialiasing << endl;
 	cout << endl;
 }

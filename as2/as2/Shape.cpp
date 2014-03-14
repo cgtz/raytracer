@@ -7,7 +7,7 @@ Shape::Shape(void)
 {
 }
 
-Sphere::Sphere(vec3 center, float radius, Transformation& transformation) {
+Sphere::Sphere(vec3 center, float radius, Transformation& transformation, float velocity) {
 	this->transform = transformation.transform;
 	this->transformI = transformation.transformI;
 	this->transformTI = transformation.transformTI;
@@ -15,9 +15,11 @@ Sphere::Sphere(vec3 center, float radius, Transformation& transformation) {
 	this->center = center;
 	this->radius = radius;
 	this->material = Material(vec3(0.2,0.2,0.2), vec3(0,0,0), vec3(0,0,0), vec3(0,0,0), 1);
+	this->velocity = velocity;
+	this->originalCenter = center;
 }
 
-Sphere::Sphere(vec3 center, float radius, Material material, Transformation& transformation) {
+Sphere::Sphere(vec3 center, float radius, Material material, Transformation& transformation, float velocity) {
 	this->transform = transformation.transform;
 	this->transformI = transformation.transformI;
 	this->transformTI = transformation.transformTI;
@@ -25,6 +27,8 @@ Sphere::Sphere(vec3 center, float radius, Material material, Transformation& tra
 	this->center = center;
 	this->radius = radius;
 	this->material = material;
+	this->velocity = velocity;
+	this->originalCenter = center;
 }
 
 bool Sphere::intersect(Ray& ray, float& tHit, Intersection* intersect) {
@@ -89,6 +93,15 @@ bool Sphere::intersect(Ray& ray) {
 		return true;
 	}
 	return false; 
+}
+
+void Sphere::moveShape(float t){
+	float offset = this->velocity*t;
+	this->center += vec3(offset, offset, offset);
+}
+
+void Sphere::restoreShape(){
+	this->center = originalCenter;
 }
 
 Triangle::Triangle(vec3 v1,vec3 v2, vec3 v3, Material material, Transformation& transformation) {
