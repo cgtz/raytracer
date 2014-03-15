@@ -25,8 +25,6 @@ void Camera::setBoundaries() {
 	this->hBasis = (viewDirection^this->up).normalize();
 	this->vBasis = (hBasis^viewDirection).normalize();
 	float halfHeight = tan(this->fov/2) * focalDist;
-	//float halfWidth = this->width/2; WROOOOOONG
-	//float aspectRatio = halfWidth / halfHeight; WROOOONG
 	float aspectRatio =  this->width / this->height; 
 	float halfWidth = aspectRatio * halfHeight;
 
@@ -37,20 +35,8 @@ void Camera::setBoundaries() {
 	this->upperRight = this->lookAt + vBasis*halfHeight + hBasis*halfWidth;
 	this->lowerLeft = this->lookAt - vBasis*halfHeight -hBasis*halfWidth;
 	this->lowerRight = this->lookAt - vBasis*halfHeight + hBasis*halfWidth;
-	//cout << "Image Boundaries" << endl;
-	//cout << "UL " << upperLeft << endl;
-	//cout << "UR "<< upperRight << endl;
-	//cout << "LL " << lowerLeft << endl;
-	//cout << "LR "<< lowerRight << endl;
 }
 
-//Ray Camera::generateRay(Sample s){
-//	float halfHeight = tan(this->fov/2) * (this->lookAt - this->lookFrom).mag();
-//	float halfWidth = this->width/2;
-//	//CAUTION: SAMPLE ORIGIN MIGHT NOT BE CARTESION (LL)
-//	Point sampleLoc = this->lookAt + this->vBasis*(s.y-halfHeight) + this->hBasis*(s.x-halfWidth);
-//	return Ray(this->lookFrom, sampleLoc - this->lookFrom, 1, std::numeric_limits<float>::max());
-//}
 
 Ray Camera::generateRay(vec3 pos) {
 	float randx = (rand() / float(RAND_MAX)) * 2 - 1;
@@ -59,10 +45,9 @@ Ray Camera::generateRay(vec3 pos) {
 	return Ray(randEye, (pos - randEye).normalize(), 1,POS_INF);
 }
 
-vec3 Camera::getPixel(int i, int j) {
+vec3 Camera::getPixel(float i, float j) {
 	float u = float(i+.5)/width;
 	float v = float(j+.5)/height;
-	//return (v*lowerLeft+upperLeft*(1-v))*u+(lowerRight*v+upperRight*(1-v))*(1-u); //scalars * vectors
 	return u*(v*lowerLeft+(1-v)*upperLeft)+(1-u)*(v*lowerRight+(1-v)*upperRight); 
 }
 

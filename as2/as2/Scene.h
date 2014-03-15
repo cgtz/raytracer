@@ -17,7 +17,7 @@ public:
 	Camera camera;
 	Film film;
 	Transformation transformation;
-	int depth, distrib;
+	int depth, distrib, aaFactor;
 	bool environment, antialiasing;
 
 

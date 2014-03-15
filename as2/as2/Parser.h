@@ -291,10 +291,11 @@ void loadScene(std::string file, Scene& scene) {
 				scene.top = cimg_library::CImg<double>(splitline[5].c_str());
 				scene.bottom = cimg_library::CImg<double>(splitline[6].c_str());
 			} 
-			//antialiasing
-			// turn antialiasing on / off
+			//antialiasing aafactor
+			// turn antialiasing on / off with aafactor by aafactor distribution
 			else if (!splitline[0].compare("antialiasing")) {
 				scene.antialiasing = true;
+				scene.aaFactor = atoi(splitline[1].c_str());
 			}
 			//unknown command
 			else {

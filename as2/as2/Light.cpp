@@ -16,7 +16,7 @@ void PtLight::generateLightRay(Intersection& intersect, Ray* ray, vec3* color) {
 	vec3 local = intersect.point;
 	ray->pos = local;
 	ray->dir = (this->pos - local).normalize(); 
-	ray->tMin = 2;
+	ray->tMin = 0.8;
 	ray->tMax = (this->pos - local).length(); //distance 
 	*color = this->color;
 
@@ -30,7 +30,7 @@ DirLight::DirLight(vec3 c, vec3 v) {
 void DirLight::generateLightRay(Intersection& intersect, Ray* ray, vec3* color) {
 	ray->pos = intersect.point;
 	ray->dir = this->dir.normalize();
-	ray->tMin = 2; //might have to adjust epsilon
+	ray->tMin = 0.8; //might have to adjust epsilon
 	ray->tMax = POS_INF;
 	*color = this->color;
 }

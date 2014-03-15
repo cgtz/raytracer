@@ -14,6 +14,6 @@ public:
 	
 	void setBoundaries();
 	Ray generateRay(vec3 s);
-	vec3 getPixel(int i, int j);
+	vec3 getPixel(float i, float j);
 };
 

@@ -8,6 +8,7 @@ Scene::Scene() {
 	this->distrib = 1;
 	this->environment = false;
 	this->antialiasing = false;
+	this->aaFactor=1;
 }
 
 Scene::Scene(int depth, int distrib, int apR)
@@ -198,13 +199,13 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 		Material mat = intersect.shape->material;
 		*color = *color + phongShading(mat, intersect);
 		if (mat.reflect[RED] > 0 || mat.reflect[GREEN] > 0 || mat.reflect[BLUE] > 0){
-			Ray reflectRay(intersect.point, ray.dir.normalize() - intersect.normal*(intersect.normal*ray.dir.normalize() * 2), 2, POS_INF);//define bounce angle/direction
+			Ray reflectRay(intersect.point, ray.dir.normalize() - intersect.normal*(intersect.normal*ray.dir.normalize() * 2), 0.8, POS_INF);//define bounce angle/direction
 			vec3 reflectedColor(0, 0, 0);
 			raytrace(reflectRay, depth - 1, &reflectedColor);//CAUTION, reflected same recursion as eye?
 			*color += prod(reflectedColor, mat.reflect);
 		}
 		if (mat.refract[RED] > 0 || mat.refract[GREEN] > 0 || mat.refract[BLUE] > 0){
-			Ray transRay(intersect.point, vec3(0, 0, 0), 2, POS_INF);
+			Ray transRay(intersect.point, vec3(0, 0, 0), 0.8, POS_INF);
 			transRay.pos = intersect.point;
 			vec3 v = (intersect.point - ray.pos).normalize();
 			float nv = intersect.normal*v;
@@ -249,65 +250,56 @@ void Scene::render(){
 	int width = camera.width;
 	int height = camera.height;
 
-	//omp_set_num_threads(8);
 
-	#pragma omp parallel
+	if (antialiasing) {
+		#pragma omp parallel
 		{
-	#pragma omp for
+			#pragma omp for
 			for (int i = 0; i < width; i++){
 				if (i%step == 0){
 					cout << c << "%";
 					c += 5;
 				}
 				for (int j = 0; j < height; j++){
-					vec3 pixel = camera.getPixel(i, j);
 					vec3 totalPix(0, 0, 0);
-					//for (int p = 0; p < 4; p++){
-					//	for (int q = 0; q < 4; q++){
+					for (int p = 0; p < aaFactor; p++){
+						for (int q = 0; q < aaFactor; q++){
 							for (int c = 0; c < this->distrib; c++){
-								//pixel[VX] += p + (rand() / float(RAND_MAX));
-								//pixel[VY] += q + (rand() / float(RAND_MAX));
+								vec3 pixel = camera.getPixel(i + (p + (rand() / float(RAND_MAX)))/aaFactor, j+(q + (rand() / float(RAND_MAX)))/aaFactor);
 								Ray eyeRay = camera.generateRay(pixel);
 								vec3 pixColor(0, 0, 0);
 								raytrace(eyeRay, this->depth, &pixColor);
 								totalPix += pixColor;
 							}
-					//	}
-					//}
+						}
+					}
+					film.writePixel(i, j, totalPix / (this->distrib*aaFactor*aaFactor));
+				}
+			}
+		}
+	} else {
+		#pragma omp parallel
+		{
+			#pragma omp for
+			for (int i = 0; i < width; i++){
+				if (i%step == 0){
+					cout << c << "%";
+					c += 5;
+				}
+				for (int j = 0; j < height; j++){
+					vec3 totalPix(0, 0, 0);
+					for (int c = 0; c < this->distrib; c++){
+						vec3 pixel = camera.getPixel(i, j);
+						Ray eyeRay = camera.generateRay(pixel);
+						vec3 pixColor(0, 0, 0);
+						raytrace(eyeRay, this->depth, &pixColor);
+						totalPix += pixColor;
+					}
 					film.writePixel(i, j, totalPix / (this->distrib));
 				}
 			}
 		}
-
-//#pragma omp parallel
-//	{
-//#pragma omp for
-//		for (int i = 0; i < width; i++){
-//			if (i%step == 0){
-//				cout << c << "%";
-//				c += 5;
-//			}
-//			for (int j = 0; j < height; j++){
-//				vec3 pixel = camera.getPixel(i, j);
-//				vec3 totalPix(0, 0, 0);
-//				for (int p = 0; p < 6; p++){
-//					float randomT = p; // (rand() / float(RAND_MAX))*(5 - 1);
-//					for (auto shape = this->allShapes.begin(); shape != this->allShapes.end(); shape++){
-//						(*shape)->moveShape(randomT);
-//					}
-//					Ray eyeRay = camera.generateRay(pixel);
-//					//eyeRay.tMin = randomT;
-//					vec3 pixColor(0, 0, 0);
-//					raytrace(eyeRay, this->depth, &pixColor);
-//					totalPix += pixColor;
-//					for (auto shape = this->allShapes.begin(); shape != this->allShapes.end(); shape++){
-//						(*shape)->restoreShape();
-//					}
-//				}
-//				film.writePixel(i, j, totalPix / (this->distrib*12));
-//			}
-//		}
-//	}
+	}
 
 	std::cout << " DONE." << std::endl;
 }
@@ -318,5 +310,6 @@ void Scene::debug(){
 	cout << "# shapes: " << allShapes.size() << endl;
 	cout << "# lights: " << allPtLights.size() + allDirLights.size() << endl;
 	cout << "Antialiasing: " << antialiasing << endl;
+	if (antialiasing) cout << "AA Factor: " << aaFactor << endl;
 	cout << endl;
 }
