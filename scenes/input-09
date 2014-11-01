@@ -1,6 +1,5 @@
-size 2000 2000
+size 640 480
 camera 0 0 2000 0 0 0 0 1 0 40
-
 
 pushTransform
 	scale 4 2 1

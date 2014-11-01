@@ -1,5 +1,5 @@
-CC=g++
-CFLAGS= -std=c++11 -g -O2
+CC=clang++
+CFLAGS= -std=c++11 -g -O2 -msse2
 LDFLAGS = -lpthread -lX11
 SOURCES=as2.cpp Camera.cpp Film.cpp Intersection.cpp Light.cpp Material.cpp Ray.cpp Scene.cpp Shape.cpp stdafx.cpp Transformation.cpp
 OBJECTS=$(SOURCES:.cpp=.o)

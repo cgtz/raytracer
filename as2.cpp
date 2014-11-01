@@ -12,14 +12,10 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	
-
 	bool write = false, disp = true;
 	string inputFile, writeFile;
 
 	Scene scene;
-
-
 
 	if (argc > 1){
 		scene = Scene();
@@ -27,13 +23,11 @@ int main(int argc, char* argv[])
 			if (strcmp(argv[i], "-i") == 0){
 				inputFile = string(argv[i + 1]);
 				i++;
-			}
-			else if (strcmp(argv[i], "-w") == 0){
+			} else if (strcmp(argv[i], "-w") == 0){
 				write = true;
 				writeFile = string(argv[i + 1]);
 				i++;
-			}
-			else if (strcmp(argv[i], "-nd") == 0){
+			} else if (strcmp(argv[i], "-nd") == 0){
 				disp = false;
 			}
 		}
@@ -52,10 +46,10 @@ int main(int argc, char* argv[])
 		scene.debug(); //move outside
 	}
 
-
 	time_t start = time(NULL);
 	scene.render();
 	time_t end = time(NULL);
+	cout << "DONE!" << endl;
 	cout << "Render Time: "<<  difftime(end, start) << " seconds" << endl;
 
 	if (write) scene.film.writeFile(writeFile);

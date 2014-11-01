@@ -15,11 +15,10 @@ PtLight::PtLight(vec3 c, vec3 p) {
 void PtLight::generateLightRay(Intersection& intersect, Ray* ray, vec3* color) {
 	vec3 local = intersect.point;
 	ray->pos = local;
-	ray->dir = (this->pos - local).normalize(); 
+	ray->dir = (this->pos - local).normalize();
 	ray->tMin = 0.8;
-	ray->tMax = (this->pos - local).length(); //distance 
+	ray->tMax = (this->pos - local).length(); //distance
 	*color = this->color;
-
 }
 
 DirLight::DirLight(vec3 c, vec3 v) {

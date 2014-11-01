@@ -1,8 +1,9 @@
-size 640 640
+size 1920 1080
 camera 0 0 4000 0 0 0 0 1 0 40
 
 aperture 50
 distrib 16
+antialiasing 3
 
 ambient 1 0 0
 diffuse 1 0 0

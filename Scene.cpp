@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Scene.h"
-#include <omp.h>
+// #include <omp.h>
 
 Scene::Scene() {
 	this->transformation = Transformation();
@@ -11,8 +11,7 @@ Scene::Scene() {
 	this->aaFactor=1;
 }
 
-Scene::Scene(int depth, int distrib, int apR)
-{
+Scene::Scene(int depth, int distrib, int apR) {
 	this->transformation = Transformation();
 	this->depth = depth;
 	this->environment = false;
@@ -20,28 +19,14 @@ Scene::Scene(int depth, int distrib, int apR)
 	this->camera = Camera(vec3(0, 0, 4000), vec3(0, 0, 0), vec3(0, 1, 0), 40, 680, 680, apR);
 	this->film = Film(680, 680);
 	this->distrib = distrib;
-
-	//this->allShapes.push_back(new Sphere(vec3(0,0,0), 600, Material(vec3(1, 0, 0), vec3(1, 0, 0), vec3(1, 1, 1), vec3(0, 0, 0), 4, vec3(0, 0, 0),vec3(0,0,0)), transformation));
-
-	//this->allShapes.push_back(new Sphere(vec3(-100, 200, 1000), 100, Material(vec3(0, 0, 0), vec3(0.5, .5, 0), vec3(.3, .3, 0), vec3(1, 1, 1), 10, vec3(0,0,0),vec3(1,1,1)), transformation));
-
-	//this->allShapes.push_back(new Sphere(vec3(0, 0, 0), 100, Material(vec3(0,0,1), vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1), 320, vec3(0, 0, 0),vec3(0,0,0)), transformation));
-
 	this->allShapes.push_back(new Sphere(vec3(-100, 0, 0), 200, Material(vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 0), 0, vec3(1, 0, 0), vec3(0, 0, 0)), transformation));
-
-
-	//transformation.push();
-	//transformation.scale(vec3(4, 4, 10));
-	////this->allShapes.push_back(new Triangle(vec3(-1000, -300, 0), vec3(0, -800, -2000), vec3(1000, -300, 0), Material(vec3(0, 0, 1), vec3(0, 1.0, 0.6), vec3(1, 1, 1), vec3(1, 1, 1), 16, vec3(0,0, 1), vec3(0, 0, 0)), transformation));
-	//transformation.pop();
-	//this->allPtLights.push_back(PtLight(vec3(1,1,1), vec3(500,1000,500)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(0, 1, 0)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 1), vec3(1, 1, 1)));
 	this->allDirLights.push_back(DirLight(vec3(1, 1, 0), vec3(-1, -1, 0)));
 }
 
 
-bool Scene::closestIntersect(Ray& ray, float& minT, Intersection& closest){
+bool Scene::closestIntersect(Ray& ray, float& minT, Intersection& closest) {
 	bool hit = false;
 	minT = POS_INF;
 	for (auto shape = this->allShapes.begin(); shape != this->allShapes.end(); shape++){
@@ -67,12 +52,12 @@ bool Scene::closestIntersect(Ray& ray, float& minT, Intersection& closest){
 	return hit;
 }
 
-bool Scene::closestIntersect(Ray& ray){
+bool Scene::closestIntersect(Ray& ray) {
 	for (auto shape = this->allShapes.begin(); shape != this->allShapes.end(); shape++){
 		float tempT = POS_INF;
 		Intersection tempI;
 		Ray tempR = ray;
-	
+
 		if ((*shape)->isSphere) {
 			tempR.pos = vec3(((*shape)->transformI)*vec4(tempR.pos, 1), VW);
 			tempR.dir = vec3(((*shape)->transformI)*vec4(tempR.dir, 0), VW);
@@ -92,7 +77,7 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 		Ray lray;
 		vec3 lcolor;		//Don't matter variable
 
-		dirLight->generateLightRay(intersect, &lray, &lcolor); //create ray: intersect->point + t*(dirLight->dir) 
+		dirLight->generateLightRay(intersect, &lray, &lcolor); //create ray: intersect->point + t*(dirLight->dir)
 		//color only if path to object not occluded
 		if (!this->closestIntersect(lray)){
 			vec3 I = (dirLight->dir * -1).normalize();
@@ -100,9 +85,9 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 			vec3 diffuse = prod(mat.diffuse, dirLight->color)*max(0.0, I*intersect.normal);
 			vec3 specular = prod(mat.specular, dirLight->color)*
 				pow(max(0.0,
-				(-I + (2 * I*intersect.normal)*intersect.normal).normalize()
-				*(this->camera.lookFrom - intersect.point).normalize()),
-				mat.coeff);
+						(-I + (2 * I*intersect.normal)*intersect.normal).normalize()
+						*(this->camera.lookFrom - intersect.point).normalize()),
+					mat.coeff);
 			totalColor += ambient + diffuse + specular;
 		}
 	}
@@ -111,7 +96,7 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 		vec3 lcolor;		//Don't matter variable
 		float tempT = POS_INF;
 		Intersection tempI; //Don't matter variable
-		ptLight->generateLightRay(intersect, &lray, &lcolor); //create lray: intersect->point + t*(light - intersect->point) 
+		ptLight->generateLightRay(intersect, &lray, &lcolor); //create lray: intersect->point + t*(light - intersect->point)
 		//Color only if path to object not occluded
 		if (!this->closestIntersect(lray)){
 			vec3 I = (ptLight->pos - intersect.point).normalize();
@@ -119,9 +104,9 @@ vec3 Scene::phongShading(Material mat, Intersection intersect) {
 			vec3 diffuse = prod(mat.diffuse, ptLight->color)*max(0.0, I*intersect.normal);
 			vec3 specular = prod(mat.specular, ptLight->color)*
 				pow(max(0.0,
-				(-I + (2 * I*intersect.normal)*intersect.normal).normalize()
-				*(this->camera.lookFrom - intersect.point).normalize()),
-				mat.coeff);
+						(-I + (2 * I*intersect.normal)*intersect.normal).normalize()
+						*(this->camera.lookFrom - intersect.point).normalize()),
+					mat.coeff);
 			totalColor += ambient + diffuse + specular;
 		}
 	}
@@ -141,50 +126,50 @@ vec3 Scene::cubeMap(vec3& ray) {
 		index = computeUV(x, y, z);
 		//cout<<index<<endl;
 		return vec3(front(index[VX] * front.width(), index[VY] * front.height(), 0, 0) / 255,
-			front(index[VX] * front.width(), index[VY] * front.height(), 0, 1) / 255,
-			front(index[VX] * front.width(), index[VY] * front.height(), 0, 2) / 255);
+					front(index[VX] * front.width(), index[VY] * front.height(), 0, 1) / 255,
+					front(index[VX] * front.width(), index[VY] * front.height(), 0, 2) / 255);
 	}
 	else if (z > fabs(x) && z >= fabs(y)) { //front
 		index = computeUV(-x, y, -z);
 		//cout<<index<<endl;
 		return vec3(back(index[VX] * back.width(), index[VY] * back.height(), 0, 0) / 255,
-			back(index[VX] * back.width(), index[VY] * back.height(), 0, 1) / 255,
-			back(index[VX] * back.width(), index[VY] * back.height(), 0, 2) / 255);
+					back(index[VX] * back.width(), index[VY] * back.height(), 0, 1) / 255,
+					back(index[VX] * back.width(), index[VY] * back.height(), 0, 2) / 255);
 	}
 	else if (-x > fabs(y) && -x >= fabs(z)) { //left
 		index = computeUV(-z, y, x);
 		//cout<<index<<endl;
 		//if (left(index[VX]*2048, index[VY]*2048, 0, 0)>1) cout<<left(index[VX]*2048, index[VY]*2048, 0, 0)<<endl;
 		return vec3(left(index[VX] * left.width(), index[VY] * left.height(), 0, 0) / 255,
-			left(index[VX] * left.width(), index[VY] * left.height(), 0, 1) / 255,
-			left(index[VX] * left.width(), index[VY] * left.height(), 0, 2) / 255);
+					left(index[VX] * left.width(), index[VY] * left.height(), 0, 1) / 255,
+					left(index[VX] * left.width(), index[VY] * left.height(), 0, 2) / 255);
 	}
 	else if (x >= fabs(y) && x >= fabs(z)) { //right
 		index = computeUV(z, y, -x);
 		//cout<<index<<endl;
 		return vec3(right(index[VX] * right.width(), index[VY] * right.height(), 0, 0) / 255,
-			right(index[VX] * right.width(), index[VY] * right.height(), 0, 1) / 255,
-			right(index[VX] * right.width(), index[VY] * right.height(), 0, 2) / 255);
+					right(index[VX] * right.width(), index[VY] * right.height(), 0, 1) / 255,
+					right(index[VX] * right.width(), index[VY] * right.height(), 0, 2) / 255);
 	}
 	else if (y >= fabs(z) && y >= fabs(x)) { //top
 		index = computeUV(x, z, y);
 		//cout<<index<<endl;
 		return vec3(top(index[VX] * top.width(), index[VY] * top.height(), 0, 0) / 255,
-			top(index[VX] * top.width(), index[VY] * top.height(), 0, 1) / 255,
-			top(index[VX] * top.width(), index[VY] * top.height(), 0, 2) / 255);
+					top(index[VX] * top.width(), index[VY] * top.height(), 0, 1) / 255,
+					top(index[VX] * top.width(), index[VY] * top.height(), 0, 2) / 255);
 	}
 	else if (-y > fabs(z) && -y >= fabs(x)) { //bottom
 		index = computeUV(x, -z, -y);
 		/*cout<<index<<endl;*/
 		return vec3(bottom(index[VX] * bottom.width(), index[VY] * bottom.height(), 0, 0) / 255,
-			bottom(index[VX] * bottom.width(), index[VY] * bottom.height(), 0, 1) / 255,
-			bottom(index[VX] * bottom.width(), index[VY] * bottom.height(), 0, 2) / 255);
+					bottom(index[VX] * bottom.width(), index[VY] * bottom.height(), 0, 1) / 255,
+					bottom(index[VX] * bottom.width(), index[VY] * bottom.height(), 0, 2) / 255);
 	}
 	return vec3(0, 0, 0);
 	//get color from index
 }
 
-void Scene::raytrace(Ray& ray, int depth, vec3* color){
+void Scene::raytrace(Ray& ray, int depth, vec3* color) {
 	if (depth <= 0) return;
 
 	float minT = POS_INF;
@@ -237,69 +222,45 @@ void Scene::raytrace(Ray& ray, int depth, vec3* color){
 	}
 }
 
-void Scene::render(){
-
-	int step = camera.width / 20;
-	int c = 0;
-	cout << "Render start: " << endl;
+void Scene::render() {
 	int width = camera.width;
 	int height = camera.height;
-
-
 	if (antialiasing) {
-		#pragma omp parallel
-		{
-			#pragma omp for
-			for (int i = 0; i < width; i++){
-				if (i%step == 0){
-					cout << c << "%";
-					c += 5;
-				}
-				for (int j = 0; j < height; j++){
-					vec3 totalPix(0, 0, 0);
-					for (int p = 0; p < aaFactor; p++){
-						for (int q = 0; q < aaFactor; q++){
-							for (int c = 0; c < this->distrib; c++){
-								vec3 pixel = camera.getPixel(i + (p + (rand() / float(RAND_MAX)))/aaFactor, j+(q + (rand() / float(RAND_MAX)))/aaFactor);
-								Ray eyeRay = camera.generateRay(pixel);
-								vec3 pixColor(0, 0, 0);
-								raytrace(eyeRay, this->depth, &pixColor);
-								totalPix += pixColor;
-							}
+		for (int i = 0; i < width; i++){
+			for (int j = 0; j < height; j++){
+				vec3 totalPix(0, 0, 0);
+				for (int p = 0; p < aaFactor; p++){
+					for (int q = 0; q < aaFactor; q++){
+						for (int c = 0; c < this->distrib; c++){
+							vec3 pixel = camera.getPixel(i + (p + (rand() / float(RAND_MAX)))/aaFactor, j+(q + (rand() / float(RAND_MAX)))/aaFactor);
+							Ray eyeRay = camera.generateRay(pixel);
+							vec3 pixColor(0, 0, 0);
+							raytrace(eyeRay, this->depth, &pixColor);
+							totalPix += pixColor;
 						}
 					}
-					film.writePixel(i, j, totalPix / (this->distrib*aaFactor*aaFactor));
 				}
+				film.writePixel(i, j, totalPix / (this->distrib*aaFactor*aaFactor));
 			}
 		}
 	} else {
-		#pragma omp parallel
-		{
-			#pragma omp for
-			for (int i = 0; i < width; i++){
-				if (i%step == 0){
-					cout << c << "%";
-					c += 5;
+		for (int i = 0; i < width; i++){
+			for (int j = 0; j < height; j++){
+				vec3 totalPix(0, 0, 0);
+				for (int c = 0; c < this->distrib; c++){
+					vec3 pixel = camera.getPixel(i, j);
+					Ray eyeRay = camera.generateRay(pixel);
+					vec3 pixColor(0, 0, 0);
+					raytrace(eyeRay, this->depth, &pixColor);
+					totalPix += pixColor;
 				}
-				for (int j = 0; j < height; j++){
-					vec3 totalPix(0, 0, 0);
-					for (int c = 0; c < this->distrib; c++){
-						vec3 pixel = camera.getPixel(i, j);
-						Ray eyeRay = camera.generateRay(pixel);
-						vec3 pixColor(0, 0, 0);
-						raytrace(eyeRay, this->depth, &pixColor);
-						totalPix += pixColor;
-					}
-					film.writePixel(i, j, totalPix / (this->distrib));
-				}
+				film.writePixel(i, j, totalPix / (this->distrib));
 			}
 		}
 	}
-
-	std::cout << " DONE." << std::endl;
 }
 
-void Scene::debug(){
+void Scene::debug() {
 	cout << "Recursive depth: " << depth << endl;
 	cout << "D samples: " << distrib << endl;
 	cout << "# shapes: " << allShapes.size() << endl;

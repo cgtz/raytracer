@@ -1,8 +1,6 @@
-size 640 640
+size 1500 1500
 camera 0 0 4000 0 0 0 0 1 0 40
-
 reflect 0.8 0.8 0.8
-
 
 pushTransform
 scale 3 1 1

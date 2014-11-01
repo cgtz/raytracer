@@ -119,8 +119,12 @@ void loadScene(std::string file, Scene& scene) {
 			//  The vertex and vertexnormal set of vertices are completely independent
 			//  (as are maxverts and maxvertnorms).
 			else if(!splitline[0].compare("vertexnormal")) {
-				vertexNormals.push_back(pair<vec3,vec3>(vec3(atof(splitline[1].c_str()),atof(splitline[2].c_str()),atof(splitline[3].c_str())), 
-														vec3(atof(splitline[4].c_str()),atof(splitline[5].c_str()),atof(splitline[6].c_str()))));
+				vertexNormals.push_back(pair<vec3,vec3>(vec3(atof(splitline[1].c_str()),
+															 atof(splitline[2].c_str()),
+															 atof(splitline[3].c_str())), 
+														vec3(atof(splitline[4].c_str()),
+															 atof(splitline[5].c_str()),
+															 atof(splitline[6].c_str()))));
 				// Create a new vertex+normal with these 6 values, store in some array
 			}
 			//tri v1 v2 v3

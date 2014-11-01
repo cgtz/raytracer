@@ -143,7 +143,7 @@ Triangle::Triangle(vec3 v1,vec3 v2, vec3 v3, vec3 n1, vec3 n2, vec3 n3, Material
 bool Triangle::intersect(Ray& ray, float& tHit, Intersection* intersect) {
 	vec3 eye = ray.pos;
 	vec3 dir = ray.dir;
-
+	
 	float a = v1[VX] - v2[VX],  d = v1[VX] - v3[VX],   g = dir[VX];
 	float b = v1[VY] - v2[VY],  e = v1[VY] - v3[VY],   h = dir[VY];
 	float c = v1[VZ] - v2[VZ],  f = v1[VZ] - v3[VZ],   i = dir[VZ];

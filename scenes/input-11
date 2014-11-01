@@ -6,7 +6,7 @@ size 640 480
 
 camera 0 -4 4 0 -1 0 0 1 1 45
 
-
+antialiasing 4
 
 maxverts 8
 
