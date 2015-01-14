@@ -1,18 +1,34 @@
-CC=clang++
-CFLAGS= -std=c++11 -g -O2 -msse2
-LDFLAGS = -lpthread -lX11
-SOURCES=as2.cpp Camera.cpp Film.cpp Intersection.cpp Light.cpp Material.cpp Ray.cpp Scene.cpp Shape.cpp stdafx.cpp Transformation.cpp
-OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=as2
+SRCDIR := src
+BUILDDIR := build
+TARGETDIR := bin
+TARGET := raytrace
 
-RM = /bin/rm -f
+CC := clang++
+SRCEXT := cpp
+CFLAGS := -std=c++11 -g -O2
+LIB := -L lib -lpthread -lX11
+INC := -I include
 
-all: $(SOURCES) $(EXECUTABLE)
-$(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(CFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
+SRC := $(shell find $(SRCDIR) -type f -name "*.$(SRCEXT)")
+OBJ := $(patsubst $(SRCDIR)/%, $(BUILDDIR)/%, $(SRC:.$(SRCEXT)=.o))
+DEP := $(OBJ:.o=.d)
 
-.cpp.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+.PHONY: clean all
+
+all: $(TARGETDIR)/$(TARGET)
+
+$(TARGETDIR)/$(TARGET): $(OBJ)
+	@echo " Linking..."
+	@mkdir -p $(TARGETDIR)
+	$(CC) $^ -o $(TARGETDIR)/$(TARGET) $(LIB)
+
+-include $(DEP)
+
+$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@)
+	$(CC) -MMD -MP $(CFLAGS) $(INC) -c -o $@ $<
 
 clean:
-	$(RM) *.o $(EXECUTABLE)
+	@echo " Cleaning...";
+	$(RM) -r $(BUILDDIR) $(TARGETDIR)
+
