@@ -1,4 +1,4 @@
-Project Skeleton
-================
+raytracer
+=========
 
-Makefile project skeleton for c/c++
+It traces rays and stuff.
